@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v4.2.1
         with:
           java-version: 22
-          distribution: jdk+fx
+          distribution: 'jdk+fx'
 
       - name: Check Java Syntax
         run: find . -name "*.java" | grep -q . && find . -name "*.java" -print0 | xargs -0 javac
