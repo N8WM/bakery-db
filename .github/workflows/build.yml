@@ -16,7 +16,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Check Java Syntax
-        run: find . -name "*.java" | grep -q . && find . -name "*.java" -print0 | xargs -0 javac
+        run: if find . -name "*.java" | grep -q .; then find . -name "*.java" -print0 | xargs -0 javac; fi
 
       - name: Lint SQL files
         run: |
