@@ -27,4 +27,4 @@ jobs:
         run: pip install sqlfluff
 
       - name: Lint SQL files
-        run: find . -name "*.sql" -exec sqlfluff lint {} +
+        run: find . -name "*.sql" -exec sqlfluff lint --dialect mysql {} +
