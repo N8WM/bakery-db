@@ -16,7 +16,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Check Java Syntax
-        run: find . -name "*.java" -exec javac {} +
+        run: find . -name "*.java" -exec sh -c 'echo "Checking $1" && javac "$1"' _ {} \;
 
       # - name: Install MySQL client
       #   run: sudo apt-get install -y mysql-client
