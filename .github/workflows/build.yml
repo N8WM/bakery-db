@@ -23,21 +23,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install MySQL client
-        run: sudo apt-get install -y mysql-client
+      - name: Install MySQL server and client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server mysql-client
   
       - name: Start MySQL server
         run: |
-          sudo apt-get install -y mysql-server
           sudo service mysql start
+          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'root';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
   
       - name: Create dummy database
         run: |
-          mysql -e 'CREATE DATABASE dummy;'
+          mysql -u root -proot -e 'CREATE DATABASE dummy;'
   
       - name: Check SQL syntax
         run: |
           for file in $(find . -name '*.sql'); do
             echo "Checking syntax for $file"
-            mysql --database=dummy --force < $file || exit 1
+            mysql -u root -proot --database=dummy --force < $file || exit 1
           done
