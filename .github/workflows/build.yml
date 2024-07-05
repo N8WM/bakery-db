@@ -11,6 +11,8 @@ jobs:
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
+        with:
+          java-version: 22
 
       - name: Check Java Syntax
         run: find . -name "*.java" | grep -q . && find . -name "*.java" -print0 | xargs -0 javac
