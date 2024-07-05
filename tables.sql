@@ -1,6 +1,6 @@
-drop table
-    Hours, LineItems, Orders, Employees,
-    Ingredients, Dishes, Inventory;
+-- drop table
+--     Hours, LineItems, Orders, Employees,
+--     Ingredients, Dishes, Inventory;
 
 create table Inventory (
     id integer auto_increment primary key,
@@ -35,9 +35,9 @@ create table Employees (
     middleInitial char(1),
     lastName varchar(40) not null,
     role enum(
-	    'Baker', 'Pastry Chef', 'Cashier', 'Barista',
+        'Baker', 'Pastry Chef', 'Cashier', 'Barista',
         'Manager', 'Cleaner', 'Delivery Driver'
-	) not null,
+    ) not null,
     dateHired timestamp not null default current_timestamp
 );
 
