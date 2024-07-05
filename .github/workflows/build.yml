@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v4.2.1
 
       - name: Check Java Syntax
-        run: javac **/*.java
+        run: find . -name "*.java" | grep -q . && find . -name "*.java" -print0 | xargs -0 javac
 
       - name: Lint SQL files
         run: |
