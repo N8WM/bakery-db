@@ -1,0 +1,25 @@
+-- TEMPLATE --
+
+Name                  -- name of contributor
+TITLE                 -- title of contribution
+Description           -- (optional)
+  MM/DD hh:MM<AM/PM>  -- start timestamp (indented)
+  MM/DD hh:MM<AM/PM>  -- end timestamp (indented)
+
+-- BEGIN LOG --
+
+Nathan McCutchen
+PRELIMINARY CREATE TABLES
+  07/03 12:00PM
+  07/03 1:45PM
+
+Nathan McCutchen
+CONTINUING CREATE TABLES
+  07/04 8:00PM
+  07/04 8:30PM
+
+Nathan McCutchen
+SETTING UP GITHUB
+Actions, rules, initial files
+  07/04 8:30PM
+  07/04 10:00PM
