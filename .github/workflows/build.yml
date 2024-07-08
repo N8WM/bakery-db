@@ -3,20 +3,23 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  gradle:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.2.1
-        with:
-          java-version: 22
-          distribution: 'adopt'
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 22
 
-      - name: Gradle Build Action
-        uses: gradle/gradle-build-action@v3.4.2
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
 
-      - name: Gradle Test
-        run: gradle test
+    - name: Execute Gradle build
+      run: ./gradlew build
