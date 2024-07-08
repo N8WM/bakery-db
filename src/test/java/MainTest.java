@@ -1,6 +1,6 @@
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 
 public class MainTest {
@@ -15,6 +15,6 @@ public class MainTest {
 
         // Capture the output and check that it is not empty
         String output = systemOutRule.getLog();
-        assertTrue("The output should not be empty", !output.isEmpty());
+        assertTrue(output.isEmpty(), "The output should not be empty");
     }
 }
