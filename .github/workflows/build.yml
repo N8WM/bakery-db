@@ -15,5 +15,5 @@ jobs:
           java-version: 22
           distribution: 'adopt'
 
-      - name: Run Tests
-        run: ./gradlew test
+      - name: Gradle Build Action
+        uses: gradle/gradle-build-action@v3.4.2
