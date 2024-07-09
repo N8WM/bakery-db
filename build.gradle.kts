@@ -19,7 +19,7 @@ repositories {
 dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
-    testImplementation("com.github.stefanbirkner:system-rules:1.19.0")
+    testImplementation("com.github.stefanbirkner:system-lambda:1.2.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -29,16 +29,8 @@ application {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-    //
     maxHeapSize = "1G"
-    //
-    // testLogging {
-    //     events("passed", "skipped", "failed")
-    //     showExceptions = true
-    //     showCauses = true
-    //     showStackTraces = true
-    //     showStandardStreams = true
-    // }
+
     testLogging {
         // set options for log level LIFECYCLE
         events(

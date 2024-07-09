@@ -1,20 +1,16 @@
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.Rule;
+import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
 
 public class MainTest {
 
-    @Rule
-    public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
-
     @Test
-    public void testMain() {
+    public void testMain() throws Exception {
         // Call the main method
-        Main.main(new String[]{});
+        String text = tapSystemOutNormalized(() -> {
+            Main.main(new String[]{});
+        });
 
-        // Capture the output and check that it is not empty
-        String output = systemOutRule.getLog();
-        assertTrue(output.isEmpty(), "The output should not be empty");
+        assertEquals("Unable to connect", text.strip());
     }
 }
