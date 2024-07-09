@@ -1,40 +1,40 @@
--- DROP TABLE
---     Hours, LineItems, Orders, Employees,
---     Ingredients, Dishes, Inventory;
+DROP TABLE
+Hours, LineItems, Orders, Employees,
+Ingredients, Dishes, Inventory;
 
 CREATE TABLE Inventory (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    quantity INTEGER NOT NULL,
-    reorderLevel INTEGER NOT NULL
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    quantity integer NOT NULL,
+    reorderLevel integer NOT NULL
 );
 
 CREATE TABLE Dishes (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    price FLOAT NOT NULL,
-    category ENUM (
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    name varchar(50) NOT NULL,
+    price float NOT NULL,
+    category enum(
         'Bread', 'Pastries', 'Cakes', 'Cookies',
         'Muffins', 'Beverages', 'Sandwiches', 'Salads'
     ) NOT NULL,
-    description VARCHAR(75)
+    description varchar(75)
 );
 
 CREATE TABLE Ingredients (
-    invId INTEGER NOT NULL,
-    dishId INTEGER NOT NULL,
-    amount INTEGER NOT NULL,
-    unit VARCHAR(10) NOT NULL,
+    invId integer NOT NULL,
+    dishId integer NOT NULL,
+    amount integer NOT NULL,
+    unit varchar(10) NOT NULL,
     PRIMARY KEY (invId, dishId),
-    FOREIGN KEY (invId) REFERENCES Inventory(id),
-    FOREIGN KEY (dishId) REFERENCES Dishes(id)
+    FOREIGN KEY (invId) REFERENCES Inventory (id),
+    FOREIGN KEY (dishId) REFERENCES Dishes (id)
 );
 
 CREATE TABLE Employees (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(40) NOT NULL,
-    middleInitial CHAR(1),
-    lastName VARCHAR(40) NOT NULL,
-    role ENUM(
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    firstName varchar(40) NOT NULL,
+    middleInitial char(1),
+    lastName varchar(40) NOT NULL,
+    role enum(
         'Baker', 'Pastry Chef', 'Cashier', 'Barista',
         'Manager', 'Cleaner', 'Delivery Driver'
     ) NOT NULL,
@@ -42,29 +42,29 @@ CREATE TABLE Employees (
 );
 
 CREATE TABLE Orders (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    ccn VARCHAR(16) NOT NULL,
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    ccn varchar(16) NOT NULL,
     date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    employeeId INTEGER NOT NULL,
-    total FLOAT NOT NULL,
-    FOREIGN KEY (employeeId) REFERENCES Employees(id)
+    employeeId integer NOT NULL,
+    total float NOT NULL,
+    FOREIGN KEY (employeeId) REFERENCES Employees (id)
 );
 
 CREATE TABLE LineItems (
-    dishId INTEGER NOT NULL,
-    orderId INTEGER NOT NULL,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    price FLOAT NOT NULL,
-    specialInstructions VARCHAR(250),
+    dishId integer NOT NULL,
+    orderId integer NOT NULL,
+    quantity integer NOT NULL DEFAULT 1,
+    price float NOT NULL,
+    specialInstructions varchar(250),
     PRIMARY KEY (dishId, orderId),
-    FOREIGN KEY (dishId) REFERENCES Dishes(id),
-    FOREIGN KEY (orderId) REFERENCES Orders(id)
+    FOREIGN KEY (dishId) REFERENCES Dishes (id),
+    FOREIGN KEY (orderId) REFERENCES Orders (id)
 );
 
 CREATE TABLE Hours (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    employeeId INTEGER NOT NULL,
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    employeeId integer NOT NULL,
     clockedIn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     clockedOut TIMESTAMP NULL DEFAULT NULL,
-    FOREIGN KEY (employeeId) REFERENCES Employees(id)
+    FOREIGN KEY (employeeId) REFERENCES Employees (id)
 );

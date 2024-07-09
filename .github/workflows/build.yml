@@ -3,36 +3,23 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  gradle:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.2.1
-        with:
-          java-version: 22
-          distribution: 'adopt'
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 22
 
-      - name: Check Java Syntax
-        run: find . -name "*.java" -exec sh -c 'echo "Checking $1" && javac "$1"' _ {} \;
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
 
-      # - name: Install MySQL client
-      #   run: sudo apt-get install -y mysql-client
-  
-      # - name: Start MySQL server
-      #   run: |
-      #     sudo apt-get install -y mysql-server
-      #     sudo service mysql start
-  
-      # - name: Create dummy database
-      #   run: |
-      #     sudo mysql -e 'CREATE DATABASE dummy;'
-  
-      # - name: Check SQL syntax
-      #   run: |
-      #     for file in $(find . -name '*.sql'); do
-      #       echo "Checking syntax for $file"
-      #       mysql --database=dummy --force < $file || exit 1
-      #     done
+    - name: Execute Gradle Build
+      run: ./gradlew build

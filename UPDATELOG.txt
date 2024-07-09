@@ -28,3 +28,9 @@ Oscar Gomez
 SETTING UP GITHUB
   07/05 7:15PM
   07/05 7:25PM
+
+Nathan McCutchen
+SETTING UP GRADLE
+Configs, jdbc, tests, gh actions
+  07/08 10:00AM
+  07/08 12:00PM
