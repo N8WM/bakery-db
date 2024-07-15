@@ -3,13 +3,15 @@ Hours, LineItems, Orders, Employees,
 Ingredients, Dishes, Inventory;
 
 CREATE TABLE Inventory (
-    id integer AUTO_INCREMENT PRIMARY KEY,
+    invId integer AUTO_INCREMENT PRIMARY KEY,
+    name varchar(30) NOT NULL,
     quantity integer NOT NULL,
+    unit varchar(10) NOT NULL,
     reorderLevel integer NOT NULL
 );
 
 CREATE TABLE Dishes (
-    id integer AUTO_INCREMENT PRIMARY KEY,
+    dishId integer AUTO_INCREMENT PRIMARY KEY,
     name varchar(50) NOT NULL,
     price float NOT NULL,
     category enum(
@@ -22,15 +24,14 @@ CREATE TABLE Dishes (
 CREATE TABLE Ingredients (
     invId integer NOT NULL,
     dishId integer NOT NULL,
-    amount integer NOT NULL,
-    unit varchar(10) NOT NULL,
+    quantity integer NOT NULL,
     PRIMARY KEY (invId, dishId),
-    FOREIGN KEY (invId) REFERENCES Inventory (id),
-    FOREIGN KEY (dishId) REFERENCES Dishes (id)
+    FOREIGN KEY (invId) REFERENCES Inventory (invId),
+    FOREIGN KEY (dishId) REFERENCES Dishes (dishId)
 );
 
 CREATE TABLE Employees (
-    id integer AUTO_INCREMENT PRIMARY KEY,
+    emplId integer AUTO_INCREMENT PRIMARY KEY,
     firstName varchar(40) NOT NULL,
     middleInitial char(1),
     lastName varchar(40) NOT NULL,
@@ -38,16 +39,16 @@ CREATE TABLE Employees (
         'Baker', 'Pastry Chef', 'Cashier', 'Barista',
         'Manager', 'Cleaner', 'Delivery Driver'
     ) NOT NULL,
-    dateHired TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    dateHired date NOT NULL
 );
 
 CREATE TABLE Orders (
-    id integer AUTO_INCREMENT PRIMARY KEY,
+    orderId integer AUTO_INCREMENT PRIMARY KEY,
     ccn varchar(16) NOT NULL,
-    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    employeeId integer NOT NULL,
+    date date NOT NULL,
+    emplId integer NOT NULL,
     total float NOT NULL,
-    FOREIGN KEY (employeeId) REFERENCES Employees (id)
+    FOREIGN KEY (emplId) REFERENCES Employees (emplId)
 );
 
 CREATE TABLE LineItems (
@@ -57,14 +58,14 @@ CREATE TABLE LineItems (
     price float NOT NULL,
     specialInstructions varchar(250),
     PRIMARY KEY (dishId, orderId),
-    FOREIGN KEY (dishId) REFERENCES Dishes (id),
-    FOREIGN KEY (orderId) REFERENCES Orders (id)
+    FOREIGN KEY (dishId) REFERENCES Dishes (dishId),
+    FOREIGN KEY (orderId) REFERENCES Orders (orderId)
 );
 
 CREATE TABLE Hours (
-    id integer AUTO_INCREMENT PRIMARY KEY,
-    employeeId integer NOT NULL,
-    clockedIn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    hid integer AUTO_INCREMENT PRIMARY KEY,
+    emplId integer NOT NULL,
+    clockedIn TIMESTAMP NOT NULL,
     clockedOut TIMESTAMP NULL DEFAULT NULL,
-    FOREIGN KEY (employeeId) REFERENCES Employees (id)
+    FOREIGN KEY (emplId) REFERENCES Employees (emplId)
 );
