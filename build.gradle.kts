@@ -26,7 +26,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("Main")
+    mainClass.set("org.bakerydb.frontend.Main")
 }
 
 javafx {

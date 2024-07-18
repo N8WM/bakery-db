@@ -1,11 +1,13 @@
-import java.sql.*;
+package org.bakerydb.frontend;
+
+import org.bakerydb.backend.*;
 
 class Main {
 
     public static void main(String[] args) {
 
         try {
-            DBConnection DB = new DBConnection("bakerydb");
+            DBConnection DB = new DBConnection();
             System.out.println("Connection established");
             app();
         } catch (Exception e) {
@@ -13,5 +15,6 @@ class Main {
         }
     }
 
-    public static void app() { }
+    public static void app() {
+    }
 }

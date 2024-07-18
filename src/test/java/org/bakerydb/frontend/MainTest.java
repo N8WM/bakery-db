@@ -1,3 +1,5 @@
+package org.bakerydb.frontend;
+
 import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
