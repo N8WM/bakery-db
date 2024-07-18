@@ -34,3 +34,13 @@ SETTING UP GRADLE
 Configs, jdbc, tests, gh actions
   07/08 10:00AM
   07/08 12:00PM
+
+Nathan McCutchen
+CREATING USER STORIES
+  07/10 1:00PM
+  07/10 1:45PM
+
+Nathan McCutchen
+UPDATING TABLES
+  07/15 10:00AM
+  07/15 12:00PM

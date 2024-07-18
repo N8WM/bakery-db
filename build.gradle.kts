@@ -2,8 +2,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    `java-library`
-    application
+    id("java-library")
+    id("application")
+    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 java {
@@ -18,6 +19,7 @@ repositories {
 
 dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testImplementation("com.github.stefanbirkner:system-lambda:1.2.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -25,6 +27,10 @@ dependencies {
 
 application {
     mainClass.set("Main")
+}
+
+javafx {
+    modules("javafx.controls")
 }
 
 tasks.named<Test>("test") {
