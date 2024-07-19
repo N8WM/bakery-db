@@ -3,6 +3,7 @@ package org.bakerydb.backend;
 import java.sql.*;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvException;
 
 public class DBConnection {
 
@@ -20,14 +21,21 @@ public class DBConnection {
             System.out.println("MySQL JDBC not found");
         }
 
-        Dotenv dotenv = Dotenv.load();
-        String timeoutMs = "2000";
+        Dotenv dotenv = null;
 
-        this.hostname = dotenv.get("HOSTNAME");
-        this.port = dotenv.get("PORT");
-        this.username = dotenv.get("USERNAME");
-        this.dbName = dotenv.get("DATABASE");
-        this.password = dotenv.get("PASSWORD");
+        try {
+            dotenv = Dotenv.load();
+        } catch (DotenvException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        String timeoutMs = "5000";
+
+        this.hostname = dotenv == null ? "" : dotenv.get("HOSTNAME");
+        this.port = dotenv == null ? "" : dotenv.get("PORT");
+        this.username = dotenv == null ? "" : dotenv.get("USERNAME");
+        this.dbName = dotenv == null ? "" : dotenv.get("DATABASE");
+        this.password = dotenv == null ? "" : dotenv.get("PASSWORD");
 
         String url = String.format(
                 "jdbc:mysql://%s:%s/%s?user=%s&password=%s&connectTimeout=%s",
