@@ -2,14 +2,16 @@ package org.bakerydb.backend.itemutils;
 
 import org.bakerydb.util.*;
 import org.bakerydb.backend.DBConnection;
-import org.bakerydb.backend.items.Inventory;
+import org.bakerydb.backend.items.InventoryItem;
 import java.util.ArrayList;
 import java.sql.*;
 
 public class InventoryUtil {
     DBConnection DB;
 
-    public InventoryUtil(DBConnection DB) { }
+    public InventoryUtil(DBConnection DB) {
+        this.DB = DB;
+    }
 
     /**
      * Add a new item to the inventory
@@ -98,11 +100,11 @@ public class InventoryUtil {
      * Fetch all items from the inventory
      * @return a Result containing either an ArrayList of Inventory items or an error message
      */
-    public Result<ArrayList<Inventory>> fetchAll() {
+    public Result<ArrayList<InventoryItem>> fetchAll() {
         String query = "SELECT * FROM Inventory";
         try {
             PreparedStatement stmt = DB.connection.prepareStatement(query);
-            return Result.ok(Inventory.list(stmt.executeQuery()));
+            return Result.ok(InventoryItem.list(stmt.executeQuery()));
         } catch (SQLException e) {
             return Result.err(e.toString());
         }
@@ -113,14 +115,14 @@ public class InventoryUtil {
      * @param invId the id of the inventory item
      * @return a Result containing either an Inventory item or an error message
      */
-    public Result<Inventory> fetch(Integer invId) {
+    public Result<InventoryItem> fetch(Integer invId) {
         String query = "SELECT * FROM Inventory WHERE invId = ?";
         try {
             PreparedStatement stmt = DB.connection.prepareStatement(query);
             stmt.setInt(1, invId);
             ResultSet result = stmt.executeQuery();
             if (result.next())
-                return Result.ok(new Inventory(result));
+                return Result.ok(new InventoryItem(result));
             else
                 return Result.err(ErrorMessage.ITEM_NOT_FOUND);
         } catch (SQLException e) {

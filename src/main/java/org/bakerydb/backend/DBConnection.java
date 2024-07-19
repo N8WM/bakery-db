@@ -24,7 +24,9 @@ public class DBConnection {
         Dotenv dotenv = null;
 
         try {
-            dotenv = Dotenv.load();
+            dotenv = Dotenv.configure()
+                .filename(".env")
+                .load();
         } catch (DotenvException e) {
             System.out.println(e.getLocalizedMessage());
         }
