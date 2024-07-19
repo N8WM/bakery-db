@@ -1,4 +1,4 @@
-DROP TABLE
+DROP TABLE IF EXISTS
 Hours, LineItems, Orders, Employees,
 Ingredients, Dishes, Inventory;
 
@@ -6,7 +6,10 @@ CREATE TABLE Inventory (
     invId integer AUTO_INCREMENT PRIMARY KEY,
     name varchar(30) NOT NULL,
     quantity integer NOT NULL,
-    unit varchar(10) NOT NULL,
+    unit enum(
+        'pcs', 'doz', 'g', 'kg', 'ml', 'l', 'lb',
+        'oz', 'cup', 'tsp', 'tbsp', 'gal'
+    ) NOT NULL,
     reorderLevel integer NOT NULL
 );
 
