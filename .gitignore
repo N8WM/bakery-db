@@ -29,9 +29,11 @@ replay_pid*
 .DS_Store
 /.settings
 kls_database.db
+.vscode
 
 # Ignore Gradle project-specific cache directory
 .gradle
+gradle.properties
 
 # Ignore Gradle build output directory
 build
