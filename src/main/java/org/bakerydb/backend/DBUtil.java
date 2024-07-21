@@ -1,24 +1,28 @@
 package org.bakerydb.backend;
 
-import java.sql.SQLException;
-
-import org.bakerydb.backend.itemutils.InventoryUtil;
+import org.bakerydb.backend.modelutils.InventoryUtil;
 
 public class DBUtil {
-    private DBConnection DB;
-    public final InventoryUtil inventoryUtil;
+    private static DBConnection DB;
+    private static InventoryUtil inventoryUtil;
+    private static boolean isSetUp = false;
 
-    public DBUtil() {
-        try {
-            this.DB = new DBConnection();
-        } catch (SQLException e) {
-            this.DB = null;
+    private static void ensureSetUp() {
+        if (!isSetUp) {
+            DB = new DBConnection();
+            inventoryUtil = new InventoryUtil(DB);
         }
 
-        this.inventoryUtil = new InventoryUtil(this.DB);
+        isSetUp = true;
     }
 
-    public boolean isConnected() {
-        return this.DB != null;
+    public static InventoryUtil getInventoryUtil() {
+        ensureSetUp();
+        return inventoryUtil;
+    }
+
+    public static boolean isConnected() {
+        ensureSetUp();
+        return DB.isConnected();
     }
 }

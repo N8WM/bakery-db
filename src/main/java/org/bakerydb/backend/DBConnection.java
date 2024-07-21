@@ -14,14 +14,17 @@ public class DBConnection {
     public final String dbName;
     private final String password;
 
-    public DBConnection() throws SQLException {
+    public DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (Exception e) {
             System.out.println("MySQL JDBC not found");
+            this.hostname = this.port = this.username = this.dbName = this.password = "";
+            this.connection = null;
+            return;
         }
 
-        Dotenv dotenv = null;
+        Dotenv dotenv;
 
         try {
             dotenv = Dotenv.configure()
@@ -29,25 +32,41 @@ public class DBConnection {
                 .load();
         } catch (DotenvException e) {
             System.out.println(e.getLocalizedMessage());
+            this.hostname = this.port = this.username = this.dbName = this.password = "";
+            this.connection = null;
+            return;
         }
 
         String timeoutMs = "5000";
 
-        this.hostname = dotenv == null ? "" : dotenv.get("HOSTNAME");
-        this.port = dotenv == null ? "" : dotenv.get("PORT");
-        this.username = dotenv == null ? "" : dotenv.get("USERNAME");
-        this.dbName = dotenv == null ? "" : dotenv.get("DATABASE");
-        this.password = dotenv == null ? "" : dotenv.get("PASSWORD");
+        this.hostname = dotenv.get("HOSTNAME");
+        this.port = dotenv.get("PORT");
+        this.username = dotenv.get("USERNAME");
+        this.dbName = dotenv.get("DATABASE");
+        this.password = dotenv.get("PASSWORD");
 
         String url = String.format(
-                "jdbc:mysql://%s:%s/%s?user=%s&password=%s&connectTimeout=%s",
-                this.hostname,
-                this.port,
-                this.dbName,
-                this.username,
-                this.password,
-                timeoutMs);
+            "jdbc:mysql://%s:%s/%s?user=%s&password=%s&connectTimeout=%s",
+            this.hostname,
+            this.port,
+            this.dbName,
+            this.username,
+            this.password,
+            timeoutMs
+        );
 
-        this.connection = DriverManager.getConnection(url);
+        Connection temp;
+
+        try {
+            temp = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            temp = null;
+        }
+
+        this.connection = temp;
+    }
+
+    public boolean isConnected() {
+        return this.connection != null;
     }
 }
