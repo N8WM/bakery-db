@@ -30,7 +30,8 @@ application {
 }
 
 javafx {
-    modules("javafx.controls")
+    version = "22.0.1"
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.graphics")
 }
 
 tasks.named<Test>("test") {

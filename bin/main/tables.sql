@@ -5,12 +5,12 @@ Ingredients, Dishes, Inventory;
 CREATE TABLE Inventory (
     invId integer AUTO_INCREMENT PRIMARY KEY,
     name varchar(30) NOT NULL,
-    quantity integer NOT NULL,
+    quantity float NOT NULL CHECK (quantity >= 0),
     unit enum(
         'pcs', 'doz', 'g', 'kg', 'ml', 'l', 'lb',
         'oz', 'cup', 'tsp', 'tbsp', 'gal'
     ) NOT NULL,
-    reorderLevel integer NOT NULL
+    reorderLevel float NOT NULL
 );
 
 CREATE TABLE Dishes (
@@ -27,7 +27,7 @@ CREATE TABLE Dishes (
 CREATE TABLE Ingredients (
     invId integer NOT NULL,
     dishId integer NOT NULL,
-    quantity integer NOT NULL,
+    quantity float NOT NULL,
     PRIMARY KEY (invId, dishId),
     FOREIGN KEY (invId) REFERENCES Inventory (invId),
     FOREIGN KEY (dishId) REFERENCES Dishes (dishId)

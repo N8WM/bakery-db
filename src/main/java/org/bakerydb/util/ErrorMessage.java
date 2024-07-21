@@ -2,6 +2,9 @@ package org.bakerydb.util;
 
 public enum ErrorMessage {
     ITEM_NOT_FOUND("Item not found"),
+    NO_CONNECTION("No connection to database"),
+    NO_KEY("No key returned"),
+    NO_CHANGE("No changes made"),
     INTERNAL_ERROR("Internal error");
 
     private final String message;
