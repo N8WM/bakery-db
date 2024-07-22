@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.bakerydb.backend.models.InventoryItem;
+import org.bakerydb.frontend.Main;
 import org.bakerydb.util.Result;
 
 import org.bakerydb.backend.DBUtil;
@@ -60,7 +61,7 @@ public class InventoryListController implements Initializable {
     ObservableList<InventoryItem> inventoryItemObservableList = FXCollections.observableArrayList();
 
     @Override
-    public void initialize(URL url, ResourceBundle resource) {
+    public void initialize(URL location, ResourceBundle resources) {
         this.onRefreshAction();
 
         idTableColumn.setCellValueFactory(new PropertyValueFactory<>("invId"));
@@ -136,13 +137,7 @@ public class InventoryListController implements Initializable {
             return;
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(
-            Thread.currentThread()
-            .getContextClassLoader()
-            .getResource("views/InventoryEditor.fxml")
-        );
-
+        FXMLLoader fxmlLoader = Main.loader("views/InventoryEditor.fxml");
         DialogPane dialoguePane;
 
         try {

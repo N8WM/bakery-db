@@ -27,6 +27,10 @@ public class Result<T> {
         return new Result<>(null, e.toString());
     }
 
+    public static <T> Result<T> err(Exception e) {
+        return new Result<>(null, e.toString());
+    }
+
     public boolean isOk() {
         return error == null;
     }
