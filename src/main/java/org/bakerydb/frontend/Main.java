@@ -1,13 +1,18 @@
 package org.bakerydb.frontend;
 
+import java.io.IOException;
+
 import org.bakerydb.backend.*;
-import org.bakerydb.frontend.controllers.RootController;
+import org.bakerydb.frontend.controllers.*;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -75,5 +80,31 @@ public class Main extends Application {
         );
 
         return fxmlLoader;
+    }
+
+    public static void showStatusMessage(
+        String title,
+        String message,
+        boolean isError
+    ) {
+        FXMLLoader fxmlLoader = loader("views/StatusMessage.fxml");
+        DialogPane dialogPane;
+
+        try {
+            dialogPane = fxmlLoader.load();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        StatusMessageController statusMessageController = fxmlLoader.getController();
+        statusMessageController.setMessage(message);
+        statusMessageController.setError(isError);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(dialogPane);
+        dialog.setTitle(title);
+
+        dialog.showAndWait();
     }
 }
