@@ -30,7 +30,7 @@ replay_pid*
 /.settings
 kls_database.db
 .vscode
-.bin
+bin
 
 # Ignore Gradle project-specific cache directory
 .gradle

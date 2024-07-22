@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
@@ -33,8 +32,6 @@ import org.bakerydb.backend.DBUtil;
 
 public class InventoryListController implements Initializable {
 
-    @FXML
-    private Label statusLabel;
     @FXML
     private TextField inventorySearchTextField;
     @FXML
@@ -100,7 +97,11 @@ public class InventoryListController implements Initializable {
         Result<ArrayList<InventoryItem>> wrapped = DBUtil.getInventoryUtil().fetchAll();
 
         if (wrapped.isErr()) {
-            statusLabel.setText(wrapped.getError());
+            Main.showStatusMessage(
+                "Error Refreshing Page",
+                wrapped.getError(),
+                true
+            );
             this.inventoryItemObservableList.clear();
         } else {
             this.inventoryItemObservableList.setAll(wrapped.getValue());
@@ -113,7 +114,7 @@ public class InventoryListController implements Initializable {
         if (selectedItem != null) {
             inventoryItemObservableList.remove(selectedItem);
             DBUtil.getInventoryUtil().deleteItem(selectedItem.getInvId())
-                .onError(m -> statusLabel.setText(m));
+                .onError(m -> Main.showStatusMessage("Error Removing Item", m, true));
         }
     }
 
@@ -138,12 +139,12 @@ public class InventoryListController implements Initializable {
         }
 
         FXMLLoader fxmlLoader = Main.loader("views/InventoryEditor.fxml");
-        DialogPane dialoguePane;
+        DialogPane dialogPane;
 
         try {
-            dialoguePane = fxmlLoader.load();
+            dialogPane = fxmlLoader.load();
         } catch (IOException e) {
-            statusLabel.setText(e.toString());
+            Main.showStatusMessage("Error Opening Editor", e.getMessage(), true);
             return;
         }
 
@@ -151,22 +152,28 @@ public class InventoryListController implements Initializable {
         inventoryEditorController.setItem(clone);
 
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setDialogPane(dialoguePane);
+        dialog.setDialogPane(dialogPane);
         dialog.setTitle(dialogTitle);
 
         Optional<ButtonType> clickedButton = dialog.showAndWait();
         if (!clickedButton.isPresent()) {
-            statusLabel.setText("Dialog failed to open");
+            Main.showStatusMessage(
+                "JavaFX Error",
+                "Node was not fully loaded",
+                true
+            );
         } else if (clickedButton.get() == ButtonType.OK) {
             if (isAdd) {
                 DBUtil.getInventoryUtil().newItem(clone)
-                    .onSuccess(k -> clone.setInvId(k))
-                    .onError(m -> statusLabel.setText(m));
-                inventoryItemObservableList.add(clone);
+                    .onSuccess(k -> {
+                        clone.setInvId(k);
+                        inventoryItemObservableList.add(clone);
+                    })
+                    .onError(m -> Main.showStatusMessage("Failed to Add Item", m, true));
             } else {
-                item.update(clone);
                 DBUtil.getInventoryUtil().update(item)
-                    .onError(m -> statusLabel.setText(m));
+                    .onSuccess(() -> item.update(clone))
+                    .onError(m -> Main.showStatusMessage("Failed to Update Item", m, true));
             }
         }
     }

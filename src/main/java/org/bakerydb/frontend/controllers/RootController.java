@@ -11,7 +11,8 @@ import javafx.scene.control.TabPane;
 
 public class RootController implements Initializable {
 
-    @FXML TabPane tabPane;
+    @FXML
+    private TabPane tabPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) { }
