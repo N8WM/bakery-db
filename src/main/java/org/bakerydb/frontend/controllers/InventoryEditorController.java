@@ -1,6 +1,7 @@
 package org.bakerydb.frontend.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.bakerydb.backend.models.InventoryItem;
@@ -30,7 +31,7 @@ public class InventoryEditorController implements Initializable {
     InventoryItem item;
 
     @Override
-    public void initialize(URL url, ResourceBundle resource) {
+    public void initialize(URL location, ResourceBundle resources) {
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         okButton.addEventFilter(ActionEvent.ACTION, event -> {
             if (!validateFormData()) {
@@ -50,31 +51,28 @@ public class InventoryEditorController implements Initializable {
     }
 
     public boolean validateFormData() {
+        ArrayList<TextField> fields = new ArrayList<>() {{
+            add(nameTextField);
+            add(quantityTextField);
+            add(unitTextField);
+            add(reorderLevelTextField);
+        }};
+
         boolean isValid = true;
-        if (nameTextField.getText().isEmpty()) {
-            nameTextField.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            nameTextField.setStyle(null);
+
+        for (TextField field : fields) {
+            if (
+                field.getText() == null ||
+                field.getText().isEmpty() ||
+                field.getText().isBlank()
+            ){
+                field.setStyle("-fx-border-color: red;");
+                isValid = false;
+            } else {
+                field.setStyle(null);
+            }
         }
-        if (quantityTextField.getText().isEmpty()) {
-            quantityTextField.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            quantityTextField.setStyle(null);
-        }
-        if (unitTextField.getText().isEmpty()) {
-            unitTextField.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            unitTextField.setStyle(null);
-        }
-        if (reorderLevelTextField.getText().isEmpty()) {
-            reorderLevelTextField.setStyle("-fx-border-color: red;");
-            isValid = false;
-        } else {
-            reorderLevelTextField.setStyle(null);
-        }
+
         return isValid;
     }
 }
