@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.bakerydb.backend.DBConnection;
+import org.bakerydb.backend.DBManager;
 import org.bakerydb.backend.models.LineItems;
 import org.bakerydb.util.ErrorMessage;
 import org.bakerydb.util.Result;
-import org.bakerydb.backend.DBManager;
 
 public final class LineItemsUtil {
 

@@ -19,7 +19,7 @@ public class DBManager {
 
     private void ensureSetUp() {
         if (!isSetUp) {
-            DB = new DBConnection();
+            this.DB = new DBConnection();
             isSetUp = true;
         }
     }
@@ -30,7 +30,6 @@ public class DBManager {
     }
 
     public DBConnection getDBConnection() {
-        ensureSetUp();
-        return DB;
+        return this.DB;
     }
 }

@@ -1,12 +1,15 @@
 package org.bakerydb.backend.modelutils;
 
-import org.bakerydb.util.*;
-import org.bakerydb.backend.DBConnection;
-import org.bakerydb.backend.models.InventoryItem;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.*;
 
+import org.bakerydb.backend.DBConnection;
 import org.bakerydb.backend.DBManager;
+import org.bakerydb.backend.models.InventoryItem;
+import org.bakerydb.util.ErrorMessage;
+import org.bakerydb.util.Result;
 
 public final class InventoryUtil {
 

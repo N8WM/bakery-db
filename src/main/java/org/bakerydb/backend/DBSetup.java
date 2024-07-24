@@ -1,7 +1,8 @@
 package org.bakerydb.backend;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
