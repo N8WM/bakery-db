@@ -5,7 +5,9 @@ public enum ErrorMessage {
     NO_CONNECTION("No connection to database"),
     NO_KEY("No key returned"),
     NO_CHANGE("No changes made"),
-    INTERNAL_ERROR("Internal error");
+    NO_RESULT("No results found"),
+    INTERNAL_ERROR("Internal error"),
+    MISSING_KEY("Key missing from result");
 
     private final String message;
 
