@@ -9,32 +9,35 @@ import org.bakerydb.backend.DBConnection;
 import org.bakerydb.backend.models.EmployeesItems;
 import org.bakerydb.util.ErrorMessage;
 import org.bakerydb.util.Result;
+import org.bakerydb.backend.DBManager;
 
-public class EmployeesUtil {
-    DBConnection DB;
+public final class EmployeesUtil {
 
-    public EmployeesUtil(DBConnection DB) {
-        this.DB = DB;
+    private EmployeesUtil() {
+        throw new UnsupportedOperationException("Util class");
+    }
+
+    private static PreparedStatement prepareStatement(String query, Object... params) throws SQLException {
+        DBConnection DB = DBManager.getInstance().getDBConnection();
+        PreparedStatement stmt = DB.connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
+        return stmt;
     }
 
     /**
      * Add a new employee to Employees
-    * @param item the EmployeesItems to add
+     * @param item the EmployeesItems to add
      * @return a Result containing either the resulting key or an error message
      */
-    public Result<Integer> newEmployee(EmployeesItems item) {
-        if (!this.DB.isConnected())
+    public static Result<Integer> newEmployee(EmployeesItems item) {
+        if (!DBManager.getInstance().isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "INSERT INTO Employees (firstName, middleInitial, lastName, role, dateHired) VALUES (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement stmt = this.DB.connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, item.getFirstName());
-            stmt.setString(2, item.getmiddleInitial());
-            stmt.setString(3, item.getLastName());
-            stmt.setString(4, item.getRole());
-            stmt.setString(5, item.getDateHired());
-
+            PreparedStatement stmt = prepareStatement(query, item.getFirstName(), item.getmiddleInitial(), item.getLastName(), item.getRole(), item.getDateHired());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet keys = stmt.getGeneratedKeys();
@@ -45,25 +48,23 @@ public class EmployeesUtil {
             } else {
                 return Result.err(ErrorMessage.NO_CHANGE);
             }
-            
         } catch (SQLException e) {
             return Result.err(e.toString());
         }
     }
 
     /**
-     * Remove an item from the Employees
-     * @param emplId the id of the inventory item
+     * Remove an employee from Employees
+     * @param emplId the id of the employee
      * @return a Result containing either a Void or an error message
      */
-    public Result<Void> deleteEmployee(Integer emplId) {
-        if (!this.DB.isConnected())
+    public static Result<Void> deleteEmployee(Integer emplId) {
+        if (!DBManager.getInstance().isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "DELETE FROM Employees WHERE emplId = ?";
         try {
-            PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setInt(1, emplId);
+            PreparedStatement stmt = prepareStatement(query, emplId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -72,22 +73,17 @@ public class EmployeesUtil {
     }
 
     /**
-     * Update an item in the inventory
-     * @param item the InventoryItem to update
+     * Update an employee in Employees
+     * @param employee the EmployeesItems to update
      * @return a Result containing either a Void or an error message
      */
-    public Result<Void> update(EmployeesItems employee) {
-        if (!this.DB.isConnected())
+    public static Result<Void> update(EmployeesItems employee) {
+        if (!DBManager.getInstance().isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "UPDATE Employees SET firstName = ?, middleInitial = ?, lastName = ?, role = ?, dateHired = ?";
+        String query = "UPDATE Employees SET firstName = ?, middleInitial = ?, lastName = ?, role = ?, dateHired = ? WHERE emplId = ?";
         try {
-            PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setString(1, employee.getFirstName());
-            stmt.setString(2, employee.getmiddleInitial());
-            stmt.setString(3, employee.getLastName());
-            stmt.setString(3, employee.getRole());
-            stmt.setString(4, employee.getDateHired());
+            PreparedStatement stmt = prepareStatement(query, employee.getFirstName(), employee.getmiddleInitial(), employee.getLastName(), employee.getRole(), employee.getDateHired(), employee.getemplId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -95,37 +91,35 @@ public class EmployeesUtil {
         return Result.ok();
     }
 
-    
     /**
-     * Fetch all items from the inventory
-     * @return a Result containing either an ArrayList of Inventory items or an error message
+     * Fetch all employees from Employees
+     * @return a Result containing either an ArrayList of EmployeesItems or an error message
      */
-    public Result<ArrayList<EmployeesItems>> fetchAll() {
-        if (!this.DB.isConnected())
+    public static Result<ArrayList<EmployeesItems>> fetchAll() {
+        if (!DBManager.getInstance().isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM Employees";
         try {
-            PreparedStatement stmt = this.DB.connection.prepareStatement(query);
+            PreparedStatement stmt = prepareStatement(query);
             return Result.ok(EmployeesItems.list(stmt.executeQuery()));
         } catch (SQLException e) {
             return Result.err(e.toString());
         }
     }
 
-        /**
-     * Fetch a single item from the inventory
-     * @param invId the id of the inventory item
-     * @return a Result containing either an Inventory item or an error message
+    /**
+     * Fetch a single employee from Employees
+     * @param emplId the id of the employee
+     * @return a Result containing either an EmployeesItems item or an error message
      */
-    public Result<EmployeesItems> fetch(Integer emplId) {
-        if (!this.DB.isConnected())
+    public static Result<EmployeesItems> fetch(Integer emplId) {
+        if (!DBManager.getInstance().isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM Employees WHERE emplId = ?";
         try {
-            PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setInt(1, emplId);
+            PreparedStatement stmt = prepareStatement(query, emplId);
             ResultSet result = stmt.executeQuery();
             if (result.next())
                 return Result.ok(new EmployeesItems(result));

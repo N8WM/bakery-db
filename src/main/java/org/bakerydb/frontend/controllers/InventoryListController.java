@@ -27,8 +27,7 @@ import java.util.ResourceBundle;
 import org.bakerydb.backend.models.InventoryItem;
 import org.bakerydb.frontend.Main;
 import org.bakerydb.util.Result;
-
-import org.bakerydb.backend.DBUtil;
+import org.bakerydb.backend.modelutils.InventoryUtil;
 
 public class InventoryListController implements Initializable {
 
@@ -94,7 +93,7 @@ public class InventoryListController implements Initializable {
 
     @FXML
     private void onRefreshAction() {
-        Result<ArrayList<InventoryItem>> wrapped = DBUtil.getInventoryUtil().fetchAll();
+        Result<ArrayList<InventoryItem>> wrapped = InventoryUtil.fetchAll();
 
         if (wrapped.isErr()) {
             Main.showStatusMessage(
@@ -113,7 +112,7 @@ public class InventoryListController implements Initializable {
         InventoryItem selectedItem = inventoryTableView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             inventoryItemObservableList.remove(selectedItem);
-            DBUtil.getInventoryUtil().deleteItem(selectedItem.getInvId())
+            InventoryUtil.deleteItem(selectedItem.getInvId())
                 .onError(m -> Main.showStatusMessage("Error Removing Item", m, true));
         }
     }
@@ -164,14 +163,14 @@ public class InventoryListController implements Initializable {
             );
         } else if (clickedButton.get() == ButtonType.OK) {
             if (isAdd) {
-                DBUtil.getInventoryUtil().newItem(clone)
+                InventoryUtil.newItem(clone)
                     .onSuccess(k -> {
                         clone.setInvId(k);
                         inventoryItemObservableList.add(clone);
                     })
                     .onError(m -> Main.showStatusMessage("Failed to Add Item", m, true));
             } else {
-                DBUtil.getInventoryUtil().update(item)
+                InventoryUtil.update(item)
                     .onSuccess(() -> item.update(clone))
                     .onError(m -> Main.showStatusMessage("Failed to Update Item", m, true));
             }

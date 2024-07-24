@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public Main() {
-        System.out.println("Connected: " + DBUtil.isConnected());
+        System.out.println("Connected: " + DBManager.getInstance().isConnected());
     }
 
     public static void main(String[] args) {
