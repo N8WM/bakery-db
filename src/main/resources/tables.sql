@@ -2,16 +2,48 @@ DROP TABLE IF EXISTS
 Hours, LineItems, Orders, Employees,
 Ingredients, Dishes, Inventory;
 
+DROP TRIGGER IF EXISTS inventoryAdd;
+DROP TRIGGER IF EXISTS inventoryUpdate;
+
 CREATE TABLE Inventory (
     invId integer AUTO_INCREMENT PRIMARY KEY,
     name varchar(30) NOT NULL,
-    quantity float NOT NULL CHECK (quantity >= 0),
+    quantity float NOT NULL,
     unit enum(
         'pcs', 'doz', 'g', 'kg', 'ml', 'l', 'lb',
         'oz', 'cup', 'tsp', 'tbsp', 'gal'
     ) NOT NULL,
     reorderLevel float NOT NULL
 );
+
+delimiter $$
+
+CREATE TRIGGER inventoryInsert
+BEFORE INSERT on Inventory
+FOR EACH ROW
+BEGIN
+    IF (NEW.quantity < 0) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Quantity must be greater than 0";
+    END IF;
+    IF (NEW.reorderLevel < 0) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Reorder Level must be greater than 0";
+    END IF;
+end $$
+
+CREATE TRIGGER inventoryUpdate
+BEFORE UPDATE on Inventory
+FOR EACH ROW
+BEGIN
+    IF (NEW.quantity < 0) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Quantity must be greater than 0";
+    END IF;
+    IF (NEW.reorderLevel < 0) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Reorder Level must be greater than 0";
+    END IF;
+
+end $$
+
+delimiter ;
 
 CREATE TABLE Dishes (
     dishId integer AUTO_INCREMENT PRIMARY KEY,
