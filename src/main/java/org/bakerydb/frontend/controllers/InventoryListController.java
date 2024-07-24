@@ -16,7 +16,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,10 +24,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.bakerydb.backend.models.InventoryItem;
-import org.bakerydb.frontend.Main;
+import org.bakerydb.frontend.FEUtil;
+import org.bakerydb.util.ModelAttribute;
 import org.bakerydb.util.Result;
-
-import org.bakerydb.backend.DBUtil;
 
 public class InventoryListController implements Initializable {
 
@@ -61,11 +59,11 @@ public class InventoryListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.onRefreshAction();
 
-        idTableColumn.setCellValueFactory(new PropertyValueFactory<>("invId"));
-        nameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        quantityTableColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        unitTableColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
-        reorderLevelTableColumn.setCellValueFactory(new PropertyValueFactory<>("reorderLevel"));
+        idTableColumn.setCellValueFactory(c -> c.getValue().getAttribute("invId").getUncheckedProperty());
+        nameTableColumn.setCellValueFactory(c -> c.getValue().getAttribute("name").getUncheckedProperty());
+        quantityTableColumn.setCellValueFactory(c -> c.getValue().getAttribute("quantity").getUncheckedProperty());
+        unitTableColumn.setCellValueFactory(c -> c.getValue().getAttribute("unit").getUncheckedProperty());
+        reorderLevelTableColumn.setCellValueFactory(c -> c.getValue().getAttribute("reorderLevel").getUncheckedProperty());
 
         FilteredList<InventoryItem> filteredData = new FilteredList<>(inventoryItemObservableList, b -> true);
 
@@ -73,7 +71,8 @@ public class InventoryListController implements Initializable {
             String q = newValue == null ? "" : newValue;
             filteredData.setPredicate(item -> {
                 boolean empty = (q.isEmpty() || q.isBlank());
-                boolean matched = item.getName().toLowerCase().indexOf(q.toLowerCase()) > -1;
+                ModelAttribute<String> attr = item.getAttribute("Name");
+                boolean matched = attr.getValue().toLowerCase().indexOf(q.toLowerCase()) > -1;
                 return empty || matched;
             });
         });
@@ -94,10 +93,10 @@ public class InventoryListController implements Initializable {
 
     @FXML
     private void onRefreshAction() {
-        Result<ArrayList<InventoryItem>> wrapped = DBUtil.getInventoryUtil().fetchAll();
+        Result<ArrayList<InventoryItem>> wrapped = new InventoryItem().fetchAllDB();
 
         if (wrapped.isErr()) {
-            Main.showStatusMessage(
+            FEUtil.showStatusMessage(
                 "Error Refreshing Page",
                 wrapped.getError(),
                 true
@@ -111,11 +110,10 @@ public class InventoryListController implements Initializable {
     @FXML
     private void onRemoveAction() {
         InventoryItem selectedItem = inventoryTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            inventoryItemObservableList.remove(selectedItem);
-            DBUtil.getInventoryUtil().deleteItem(selectedItem.getInvId())
-                .onError(m -> Main.showStatusMessage("Error Removing Item", m, true));
-        }
+        if (selectedItem != null)
+            selectedItem.deleteFromDB()
+                .onSuccess(() -> inventoryItemObservableList.remove(selectedItem))
+                .onError(m -> FEUtil.showStatusMessage("Error Removing Item", m, true));
     }
 
     @FXML
@@ -128,27 +126,27 @@ public class InventoryListController implements Initializable {
             isAdd = false;
             dialogTitle = "Update Inventory Item";
             item = inventoryTableView.getSelectionModel().getSelectedItem();
-            clone = item.clone();
         } else if (event.getSource().equals(addInventoryButton)) {
             isAdd = true;
             dialogTitle = "Add Inventory Item";
             item = new InventoryItem();
-            clone = item.clone();
         } else {
             return;
         }
 
-        FXMLLoader fxmlLoader = Main.loader("views/InventoryEditor.fxml");
+        clone = item.clone();
+
+        FXMLLoader fxmlLoader = FEUtil.loader("views/Editor.fxml");
         DialogPane dialogPane;
 
         try {
             dialogPane = fxmlLoader.load();
         } catch (IOException e) {
-            Main.showStatusMessage("Error Opening Editor", e.getMessage(), true);
+            FEUtil.showStatusMessage("Error Opening Editor", e.getMessage(), true);
             return;
         }
 
-        InventoryEditorController inventoryEditorController = fxmlLoader.getController();
+        EditorController inventoryEditorController = fxmlLoader.getController();
         inventoryEditorController.setItem(clone);
 
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -156,24 +154,25 @@ public class InventoryListController implements Initializable {
         dialog.setTitle(dialogTitle);
 
         Optional<ButtonType> clickedButton = dialog.showAndWait();
+
         if (!clickedButton.isPresent()) {
-            Main.showStatusMessage(
+            FEUtil.showStatusMessage(
                 "JavaFX Error",
                 "Node was not fully loaded",
                 true
             );
         } else if (clickedButton.get() == ButtonType.OK) {
             if (isAdd) {
-                DBUtil.getInventoryUtil().newItem(clone)
+                clone.addToDB("invId")
                     .onSuccess(k -> {
-                        clone.setInvId(k);
+                        item.update(clone);
                         inventoryItemObservableList.add(clone);
                     })
-                    .onError(m -> Main.showStatusMessage("Failed to Add Item", m, true));
+                    .onError(m -> FEUtil.showStatusMessage("Failed to Add Item", m, true));
             } else {
-                DBUtil.getInventoryUtil().update(item)
+                clone.updateDB()
                     .onSuccess(() -> item.update(clone))
-                    .onError(m -> Main.showStatusMessage("Failed to Update Item", m, true));
+                    .onError(m -> FEUtil.showStatusMessage("Failed to Update Item", m, true));
             }
         }
     }
