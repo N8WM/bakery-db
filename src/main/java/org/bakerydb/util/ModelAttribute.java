@@ -23,6 +23,7 @@ public class ModelAttribute<T> {
     private TextInputControl field;
     private Label label;
     private Boolean userEditable;
+    private Boolean dbColumn;
     private Boolean key;
     private NStringConverter<T> converter;
     private StringProperty textProperty;
@@ -32,12 +33,21 @@ public class ModelAttribute<T> {
      * ModelAttribute constructor
      * @param value - an initial value
      * @param alias - the name of the variable storing the attribute
+     * @param type - the class of the value (i.e., String.class, Integer.class, etc.)
      *
      * @implNote Once a ModelAttribute is instantiated, there are several methods that can be used to customize the attribute
-     * @implNote {@code ModelAttribute.setDisplayName(String displayName)} ............................ default is value of alias
-     * @implNote {@code ModelAttribute.setField(Class<? extends TextInputControl> fieldClass)} ........ default is TextField.class
-     * @implNote {@code ModelAttribute.setUserEditable(Boolean userEditable)} ......................... default is true
-     * @implNote {@code ModelAttribute.setConverter(<? extends StringConverter<T>> converterClass)} ... default assumes T is a String
+     * @implNote {@code ModelAttribute.setDisplayName(String displayName)}
+     * default is value of alias
+     * @implNote {@code ModelAttribute.setField(Class<? extends TextInputControl> fieldClass)}
+     * default is TextField.class
+     * @implNote {@code ModelAttribute.setUserEditable(Boolean userEditable)}
+     * default is true
+     * @implNote {@code ModelAttribute.setDbColumn(Boolean dbColumn)}
+     * default is true
+     * @implNote {@code ModelAttribute.setKey(Boolean key)}
+     * default is false
+     * @implNote {@code ModelAttribute.setConverter(<? extends StringConverter<T>> converterClass)}
+     * default assumes T is a String
      */
     @SuppressWarnings("unchecked")
     public ModelAttribute(T value, String alias, Class<T> type) {
@@ -45,6 +55,7 @@ public class ModelAttribute<T> {
         this.alias = alias;
         this.displayName = alias;
         this.userEditable = true;
+        this.dbColumn = true;
         this.key = false;
         this.converter = new NStringConverter<T>(
             new StringConverter<T>() {
@@ -78,6 +89,10 @@ public class ModelAttribute<T> {
         return this.property;
     }
 
+    public StringConverter<T> getStringConverter() {
+        return this.converter;
+    }
+
     @SuppressWarnings("unchecked")
     public <U> ObjectProperty<U> getUncheckedProperty() {
         return (ObjectProperty<U>) this.property;
@@ -85,6 +100,10 @@ public class ModelAttribute<T> {
 
     public Boolean isUserEditable() {
         return this.userEditable;
+    }
+
+    public Boolean isDbColumn() {
+        return this.dbColumn;
     }
 
     public Boolean isKey() {
@@ -171,6 +190,11 @@ public class ModelAttribute<T> {
 
     public ModelAttribute<T> setUserEditable(Boolean userEditable) {
         this.userEditable = userEditable;
+        return this;
+    }
+
+    public ModelAttribute<T> setDbColumn(Boolean dbColumn) {
+        this.dbColumn = dbColumn;
         return this;
     }
 

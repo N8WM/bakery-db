@@ -31,7 +31,7 @@ public abstract class Model<T extends Model<T>> {
 
     public void updateFromSQL(ResultSet result) throws SQLException {
         for (ModelAttribute<?> a : this.attributes)
-            a.updateFromSQL(result);
+            if (a.isDbColumn()) a.updateFromSQL(result);
     }
 
     public void update(T other) {
@@ -59,12 +59,12 @@ public abstract class Model<T extends Model<T>> {
 
         String query = "INSERT INTO " + this.tableName + " (";
         query += this.attributes.stream()
-            .filter(a -> !a.isKey())
+            .filter(a -> !a.isKey() && a.isDbColumn())
             .map(a -> a.getAlias())
             .collect(Collectors.joining(", "));
         query += ") VALUES (";
         query += this.attributes.stream()
-            .filter(a -> !a.isKey())
+            .filter(a -> !a.isKey() && a.isDbColumn())
             .map(a -> "?")
             .collect(Collectors.joining(", "));
         query += ")";
@@ -73,7 +73,7 @@ public abstract class Model<T extends Model<T>> {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             int i = 1;
             for (ModelAttribute<?> a : attributes)
-                if (!a.isKey())
+                if (!a.isKey() && a.isDbColumn())
                     stmt.setObject(i++, a.getValue());
 
             System.out.println(stmt.toString());
@@ -81,7 +81,7 @@ public abstract class Model<T extends Model<T>> {
             if (affectedRows > 0) {
                 ResultSet keys = stmt.getGeneratedKeys();
                 ArrayList<String> generatedKeys = this.attributes.stream()
-                    .filter(a -> a.isKey())
+                    .filter(a -> a.isKey() && a.isDbColumn())
                     .map(a -> a.getAlias())
                     .collect(Collectors.toCollection(ArrayList::new));
                 for (String k : generatedKeys) {
@@ -108,12 +108,12 @@ public abstract class Model<T extends Model<T>> {
 
         String query = "UPDATE " + this.tableName + " SET ";
         query += this.attributes.stream()
-            .filter(a -> !a.isKey())
+            .filter(a -> !a.isKey() && a.isDbColumn())
             .map(a -> a.getAlias() + " = ?")
             .collect(Collectors.joining(", "));
         query += " WHERE ";
         query += this.attributes.stream()
-            .filter(a -> a.isKey())
+            .filter(a -> a.isKey() && a.isDbColumn())
             .map(a -> a.getAlias() + " = ?")
             .collect(Collectors.joining(" AND "));
 
@@ -122,10 +122,10 @@ public abstract class Model<T extends Model<T>> {
 
             int i = 1;
             for (ModelAttribute<?> a : this.attributes)
-                if (!a.isKey())
+                if (!a.isKey() && a.isDbColumn())
                     stmt.setObject(i++, a.getValue());
             for (ModelAttribute<?> a : this.attributes)
-                if (a.isKey())
+                if (a.isKey() && a.isDbColumn())
                     stmt.setObject(i++, a.getValue());
 
             System.out.println(stmt.toString());
@@ -142,14 +142,14 @@ public abstract class Model<T extends Model<T>> {
 
         String query = "DELETE FROM " + this.tableName + " WHERE ";
         query += this.attributes.stream()
-            .filter(a -> a.isKey())
+            .filter(a -> a.isKey() && a.isDbColumn())
             .map(a -> a.getAlias() + " = ?")
             .collect(Collectors.joining(" AND "));
 
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
             for (int i = 0; i < this.attributes.size(); i++)
-                if (this.attributes.get(i).isKey())
+                if (this.attributes.get(i).isKey() && this.attributes.get(i).isDbColumn())
                     stmt.setObject(i + 1, this.attributes.get(i).getValue());
             System.out.println(stmt.toString());
             stmt.executeUpdate();
