@@ -6,8 +6,6 @@ import java.util.Date;
 import org.bakerydb.util.Model;
 import org.bakerydb.util.ModelAttribute;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.util.converter.*;
 
 public class Employee extends Model<Employee> {

@@ -1,8 +1,6 @@
 package org.bakerydb.frontend.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 
 import java.net.URL;
@@ -46,7 +44,7 @@ public class EmployeeController extends BaseTabController<Employee> {
         FEUtil.showAddEditor(
             newEmployee,
             "Add Employee",
-            this.getModel()
+            this.getObservableList()
         );
     }
 }

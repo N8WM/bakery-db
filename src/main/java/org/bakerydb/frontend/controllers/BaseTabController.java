@@ -192,7 +192,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         return newModel;
     }
 
-    protected ObservableList<T> getModel() {
+    protected ObservableList<T> getObservableList() {
         return this.observableList;
     }
 }
