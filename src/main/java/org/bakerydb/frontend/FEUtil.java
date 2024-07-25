@@ -2,16 +2,17 @@ package org.bakerydb.frontend;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
+import org.bakerydb.frontend.controllers.EditorController;
 import org.bakerydb.frontend.controllers.StatusMessageController;
+import org.bakerydb.util.Model;
 
-import javafx.beans.property.Property;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.TextInputControl;
-import javafx.util.StringConverter;
 
 public class FEUtil {
     public static FXMLLoader loader(String name) {
@@ -53,27 +54,52 @@ public class FEUtil {
         dialog.showAndWait();
     }
 
-    // public static void showEditor(
-    //     Collection<Property<?>> properties,
-    //     Collection<StringConverter<?>> converters,
-    //     Collection<TextInputControl> fields
-    // ) {
-    //     FXMLLoader fxmlLoader = loader("views/Editor.fxml");
-    //     DialogPane dialogPane;
-    //     try {
-    //         dialogPane = fxmlLoader.load();
-    //     } catch (IOException e) {
-    //         showStatusMessage("Error Opening Editor", e.getMessage(), true);
-    //         return;
-    //     }
-    //     EditorController editorController = fxmlLoader.getController();
-    //     editorController.setProperties(properties);
-    //     editorController.setConverters(converters);
-    //     editorController.setFields(fields);
-    //     Dialog<ButtonType> dialog = new Dialog<>();
-    //     dialog.setDialogPane(dialogPane);
-    //     dialog.setTitle("Editor");
-    //     dialog.showAndWait();
-    //
-    // }
+    public static <T extends Model<T>> void showAddEditor(T model, String title, ObservableList<T> observableList) {
+        Boolean isAdd = observableList != null;
+
+        T clone = model.clone();
+        FXMLLoader fxmlLoader = loader("views/Editor.fxml");
+        DialogPane dialogPane;
+
+        try {
+            dialogPane = fxmlLoader.load();
+        } catch (IOException e) {
+            showStatusMessage("Error Opening Editor", e.getMessage(), true);
+            return;
+        }
+
+        EditorController editorController = fxmlLoader.getController();
+        editorController.setItem(clone);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(dialogPane);
+        dialog.setTitle(title);
+
+        Optional<ButtonType> clickedButton =  dialog.showAndWait();
+
+        if (!clickedButton.isPresent()) {
+            showStatusMessage(
+                "JavaFX Error",
+                "Node was not fully loaded",
+                true
+            );
+        } else if (clickedButton.get() == ButtonType.OK) {
+            if (isAdd) {
+                clone.addToDB()
+                    .onSuccess(k -> {
+                        model.update(clone);
+                        observableList.add(clone);
+                    })
+                    .onError(m -> showStatusMessage("Failed to Add Item", m, true));
+            } else {
+                clone.updateDB()
+                    .onSuccess(() -> model.update(clone))
+                    .onError(m -> showStatusMessage("Failed to Update Item", m, true));
+            }
+        }
+    }
+
+    public static <T extends Model<T>> void showUpdateEditor(T model, String title) {
+        showAddEditor(model, title, null);
+    }
 }

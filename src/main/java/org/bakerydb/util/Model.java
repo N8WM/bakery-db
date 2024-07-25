@@ -49,11 +49,11 @@ public abstract class Model<T extends Model<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    public <U> ModelAttribute<U> getAttribute(String attrName) {
-        return (ModelAttribute<U>) this.attributeMap.get(attrName);
+    public <U> ModelAttribute<U> getAttribute(String attrAlias) {
+        return (ModelAttribute<U>) this.attributeMap.get(attrAlias);
     }
 
-    public Result<Void> addToDB(String... generatedKeys) {
+    public Result<Void> addToDB() {
         if (!DBUtil.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
@@ -68,7 +68,6 @@ public abstract class Model<T extends Model<T>> {
             .map(a -> "?")
             .collect(Collectors.joining(", "));
         query += ")";
-        System.out.println(query);
 
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -77,12 +76,17 @@ public abstract class Model<T extends Model<T>> {
                 if (!a.isKey())
                     stmt.setObject(i++, a.getValue());
 
+            System.out.println(stmt.toString());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet keys = stmt.getGeneratedKeys();
-                for (i = 0; i < generatedKeys.length; i++) {
+                ArrayList<String> generatedKeys = this.attributes.stream()
+                    .filter(a -> a.isKey())
+                    .map(a -> a.getAlias())
+                    .collect(Collectors.toCollection(ArrayList::new));
+                for (String k : generatedKeys) {
                     if (keys.next()) {
-                        ModelAttribute<Integer> ktmp = this.getAttribute(generatedKeys[i]);
+                        ModelAttribute<Integer> ktmp = this.getAttribute(k);
                         ktmp.setValue(keys.getInt(1));
                     } else {
                         return Result.err(ErrorMessage.MISSING_KEY);
@@ -112,7 +116,6 @@ public abstract class Model<T extends Model<T>> {
             .filter(a -> a.isKey())
             .map(a -> a.getAlias() + " = ?")
             .collect(Collectors.joining(" AND "));
-        System.out.println(query);
 
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
@@ -125,6 +128,7 @@ public abstract class Model<T extends Model<T>> {
                 if (a.isKey())
                     stmt.setObject(i++, a.getValue());
 
+            System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -141,13 +145,13 @@ public abstract class Model<T extends Model<T>> {
             .filter(a -> a.isKey())
             .map(a -> a.getAlias() + " = ?")
             .collect(Collectors.joining(" AND "));
-        System.out.println(query);
 
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
             for (int i = 0; i < this.attributes.size(); i++)
                 if (this.attributes.get(i).isKey())
                     stmt.setObject(i + 1, this.attributes.get(i).getValue());
+            System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -164,7 +168,6 @@ public abstract class Model<T extends Model<T>> {
             .map(k -> k + " = ?")
             .collect(Collectors.joining(" AND "));
         query += " LIMIT 1";
-        System.out.println(query);
         
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
@@ -173,6 +176,7 @@ public abstract class Model<T extends Model<T>> {
             for (String key : keys.keySet())
                 stmt.setObject(i++, keys.get(key));
 
+            System.out.println(query);
             ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
@@ -192,10 +196,10 @@ public abstract class Model<T extends Model<T>> {
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM " + this.tableName;
-        System.out.println(query);
 
         try {
             PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
+            System.out.println(query);
             ResultSet result = stmt.executeQuery();
 
             ArrayList<T> items = new ArrayList<T>();
