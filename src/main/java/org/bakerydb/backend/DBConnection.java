@@ -2,12 +2,14 @@ package org.bakerydb.backend;
 
 import java.sql.*;
 
+import org.bakerydb.frontend.FEUtil;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
 
 public class DBConnection {
 
-    public final Connection connection;
+    public Connection connection;
     public final String hostname;
     public final String port;
     public final String username;
@@ -37,13 +39,18 @@ public class DBConnection {
             return;
         }
 
-        String timeoutMs = "5000";
 
         this.hostname = dotenv.get("HOSTNAME");
         this.port = dotenv.get("PORT");
         this.username = dotenv.get("USERNAME");
         this.dbName = dotenv.get("DATABASE");
         this.password = dotenv.get("PASSWORD");
+
+        this.connect(true);
+    }
+
+    public boolean connect(boolean showStatusMessage) {
+        String timeoutMs = "5000";
 
         String url = String.format(
             "jdbc:mysql://%s:%s/%s?user=%s&password=%s&connectTimeout=%s",
@@ -64,6 +71,16 @@ public class DBConnection {
         }
 
         this.connection = temp;
+
+        if (!this.isConnected() && showStatusMessage)
+            FEUtil.showStatusMessage(
+                "Connection Error",
+                "Could not connect to the BakeryDB database. "
+                + "Ensure you have a stable connection to the Cal Poly campus network.",
+                true
+            );
+
+        return this.connection != null;
     }
 
     public boolean isConnected() {

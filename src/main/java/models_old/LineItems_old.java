@@ -1,18 +1,18 @@
-package org.bakerydb.backend.models;
+package models_old;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 import javafx.beans.property.*;
 
-public class LineItems {
+public class LineItems_old {
     private IntegerProperty dishId;
     private IntegerProperty orderId;
     private IntegerProperty quantity;
     private FloatProperty price;
     private StringProperty specialInstructions;
     
-    public LineItems(
+    public LineItems_old(
         Integer dishId,
         Integer orderId,
         Integer quantity,
@@ -27,7 +27,7 @@ public class LineItems {
         this.specialInstructions = new SimpleStringProperty(specialInstructions);
     }
 
-    public LineItems(ResultSet result) throws SQLException {
+    public LineItems_old(ResultSet result) throws SQLException {
         this(
             result.getInt("dishId"),
             result.getInt("orderId"),
@@ -37,7 +37,7 @@ public class LineItems {
         );
     }
 
-    public LineItems() {
+    public LineItems_old() {
         this.dishId = new SimpleIntegerProperty();
         this.orderId = new SimpleIntegerProperty();
         this.quantity = new SimpleIntegerProperty();
@@ -45,16 +45,16 @@ public class LineItems {
         this.specialInstructions = new SimpleStringProperty();
     }
 
-    public static ArrayList<LineItems> list(ResultSet result) throws SQLException {
-        ArrayList<LineItems> lineList = new ArrayList<LineItems>();
+    public static ArrayList<LineItems_old> list(ResultSet result) throws SQLException {
+        ArrayList<LineItems_old> lineList = new ArrayList<LineItems_old>();
         while (result.next()) {
-            lineList.add(new LineItems(result));
+            lineList.add(new LineItems_old(result));
         }
         return lineList;
     }
 
-    public LineItems clone() {
-        return new LineItems(
+    public LineItems_old clone() {
+        return new LineItems_old(
             this.dishId.get(),
             this.orderId.get(),
             this.quantity.get(),
@@ -63,7 +63,7 @@ public class LineItems {
         );
     }
 
-    public void update(LineItems other) {
+    public void update(LineItems_old other) {
         this.dishId.set(other.getdishId());
         this.orderId.set(other.getorderId());
         this.quantity.set(other.getQuantity());

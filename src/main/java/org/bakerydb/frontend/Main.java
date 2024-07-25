@@ -19,15 +19,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        if (args.length > 0) {
-            if (args.length == 1 && args[0].equals("--create-tables")) {
-                DBSetup.run();
-                System.exit(0);
-            }
-            System.out.println("The only valid argument is `--create-tables`");
-            System.exit(1);
-        }
-
         launch(args);
     }
 

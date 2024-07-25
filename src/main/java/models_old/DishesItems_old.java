@@ -1,11 +1,11 @@
-package org.bakerydb.backend.models;
+package models_old;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 import javafx.beans.property.*;
 
-public class DishesItems {
+public class DishesItems_old {
     private IntegerProperty dishId;
     private StringProperty name;
     private FloatProperty price;
@@ -13,7 +13,7 @@ public class DishesItems {
     private StringProperty description;
 
 
-    public DishesItems(Integer dishId, String name, Float price, String category, String description) {
+    public DishesItems_old(Integer dishId, String name, Float price, String category, String description) {
         this.dishId = new SimpleIntegerProperty(dishId);
         this.name = new SimpleStringProperty(name);
         this.price = new SimpleFloatProperty(price);
@@ -21,7 +21,7 @@ public class DishesItems {
         this.description = new SimpleStringProperty(description);
     }
     
-    public DishesItems(ResultSet result) throws SQLException {
+    public DishesItems_old(ResultSet result) throws SQLException {
         this(
             result.getInt("dishId"),
             result.getString("name"),
@@ -31,7 +31,7 @@ public class DishesItems {
         );
     }
 
-    public DishesItems() {
+    public DishesItems_old() {
         this.dishId = new SimpleIntegerProperty();
         this.name = new SimpleStringProperty();
         this.price = new SimpleFloatProperty();
@@ -39,16 +39,16 @@ public class DishesItems {
         this.description = new SimpleStringProperty();
     }
 
-    public static ArrayList<DishesItems> list(ResultSet result) throws SQLException {
-        ArrayList<DishesItems> dishesList = new ArrayList<DishesItems>();
+    public static ArrayList<DishesItems_old> list(ResultSet result) throws SQLException {
+        ArrayList<DishesItems_old> dishesList = new ArrayList<DishesItems_old>();
         while (result.next()) {
-            dishesList.add(new DishesItems(result));
+            dishesList.add(new DishesItems_old(result));
         }
         return dishesList;
     }
 
-    public DishesItems clone() {
-        return new DishesItems(
+    public DishesItems_old clone() {
+        return new DishesItems_old(
             this.dishId.get(),
             this.name.get(),
             this.price.get(),
@@ -57,7 +57,7 @@ public class DishesItems {
         );
     }
 
-    public void update(DishesItems other) {
+    public void update(DishesItems_old other) {
         this.dishId.set(other.getDishId());
         this.name.set(other.getName());
         this.price.set(other.getprice());
