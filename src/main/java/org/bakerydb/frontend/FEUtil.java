@@ -1,7 +1,6 @@
 package org.bakerydb.frontend;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Optional;
 
 import org.bakerydb.frontend.controllers.EditorController;

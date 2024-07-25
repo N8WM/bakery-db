@@ -1,4 +1,4 @@
-package org.bakerydb.backend.modelutils;
+package modelutils_old;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,33 +6,34 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.bakerydb.backend.DBConnection;
-import org.bakerydb.backend.models.DishesItems;
+import models_old.EmployeesItems_old;
 import org.bakerydb.util.ErrorMessage;
 import org.bakerydb.util.Result;
 
-public class DishesUtil {
+public class EmployeesUtil_old {
     DBConnection DB;
 
-    public DishesUtil(DBConnection DB) {
+    public EmployeesUtil_old(DBConnection DB) {
         this.DB = DB;
     }
 
-     /**
-     * Add a new dish to dishes
-    * @param item the DishesItems to add
+    /**
+     * Add a new employee to Employees
+    * @param item the EmployeesItems to add
      * @return a Result containing either the resulting key or an error message
      */
-    public Result<Integer> newItem(DishesItems item) {
+    public Result<Integer> newEmployee(EmployeesItems_old item) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "INSERT INTO Dishes (name, price, category, description) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Employees (firstName, middleInitial, lastName, role, dateHired) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, item.getName());
-            stmt.setFloat(2, item.getprice());
-            stmt.setString(3, item.getcategory());
-            stmt.setString(4, item.getdescription());
+            stmt.setString(1, item.getFirstName());
+            stmt.setString(2, item.getmiddleInitial());
+            stmt.setString(3, item.getLastName());
+            stmt.setString(4, item.getRole());
+            stmt.setString(5, item.getDateHired());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -50,19 +51,19 @@ public class DishesUtil {
         }
     }
 
-        /**
-     * Remove an item from the Dishes
-     * @param dishId the id of the inventory item
+    /**
+     * Remove an item from the Employees
+     * @param emplId the id of the inventory item
      * @return a Result containing either a Void or an error message
      */
-    public Result<Void> deleteDish(Integer dishId) {
+    public Result<Void> deleteEmployee(Integer emplId) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "DELETE FROM Dishes WHERE dishId = ?";
+        String query = "DELETE FROM Employees WHERE emplId = ?";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setInt(1, dishId);
+            stmt.setInt(1, emplId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -70,23 +71,23 @@ public class DishesUtil {
         return Result.ok();
     }
 
-        /**
+    /**
      * Update an item in the inventory
      * @param item the InventoryItem to update
      * @return a Result containing either a Void or an error message
      */
-    public Result<Void> update(DishesItems dish) {
+    public Result<Void> update(EmployeesItems_old employee) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "UPDATE Dishes SET name = ?, price = ?, category = ?, description = ? WHERE dishId = ?";
+        String query = "UPDATE Employees SET firstName = ?, middleInitial = ?, lastName = ?, role = ?, dateHired = ?";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setString(1, dish.getName());
-            stmt.setFloat(2, dish.getprice());
-            stmt.setString(3, dish.getcategory());
-            stmt.setString(4, dish.getdescription());
-            stmt.setInt(5, dish.getDishId());
+            stmt.setString(1, employee.getFirstName());
+            stmt.setString(2, employee.getmiddleInitial());
+            stmt.setString(3, employee.getLastName());
+            stmt.setString(3, employee.getRole());
+            stmt.setString(4, employee.getDateHired());
             stmt.executeUpdate();
         } catch (SQLException e) {
             return Result.err(e.toString());
@@ -94,39 +95,40 @@ public class DishesUtil {
         return Result.ok();
     }
 
+    
     /**
      * Fetch all items from the inventory
      * @return a Result containing either an ArrayList of Inventory items or an error message
      */
-    public Result<ArrayList<DishesItems>> fetchAll() {
+    public Result<ArrayList<EmployeesItems_old>> fetchAll() {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "SELECT * FROM Dishes";
+        String query = "SELECT * FROM Employees";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            return Result.ok(DishesItems.list(stmt.executeQuery()));
+            return Result.ok(EmployeesItems_old.list(stmt.executeQuery()));
         } catch (SQLException e) {
             return Result.err(e.toString());
         }
     }
 
-    /**
+        /**
      * Fetch a single item from the inventory
      * @param invId the id of the inventory item
      * @return a Result containing either an Inventory item or an error message
      */
-    public Result<DishesItems> fetch(Integer dishId) {
+    public Result<EmployeesItems_old> fetch(Integer emplId) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
-        String query = "SELECT * FROM Dishes WHERE dishId = ?";
+        String query = "SELECT * FROM Employees WHERE emplId = ?";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            stmt.setInt(1, dishId);
+            stmt.setInt(1, emplId);
             ResultSet result = stmt.executeQuery();
             if (result.next())
-                return Result.ok(new DishesItems(result));
+                return Result.ok(new EmployeesItems_old(result));
             else
                 return Result.err(ErrorMessage.ITEM_NOT_FOUND);
         } catch (SQLException e) {

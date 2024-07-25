@@ -1,4 +1,4 @@
-package org.bakerydb.backend.modelutils;
+package modelutils_old;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,14 +6,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.bakerydb.backend.DBConnection;
-import org.bakerydb.backend.models.LineItems;
+import models_old.LineItems_old;
 import org.bakerydb.util.ErrorMessage;
 import org.bakerydb.util.Result;
 
-public class LineItemsUtil {
+public class LineItemsUtil_old {
     DBConnection DB;
 
-    public LineItemsUtil(DBConnection DB) {
+    public LineItemsUtil_old(DBConnection DB) {
         this.DB = DB;
     }
 
@@ -22,7 +22,7 @@ public class LineItemsUtil {
     * @param item the EmployeesItems to add
      * @return a Result containing either the resulting key or an error message
      */
-    public Result<Integer> newLineItems(LineItems item) {
+    public Result<Integer> newLineItems(LineItems_old item) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
@@ -77,7 +77,7 @@ public class LineItemsUtil {
      * @param item the InventoryItem to update
      * @return a Result containing either a Void or an error message
      */
-    public Result<Void> update(LineItems lineitems) {
+    public Result<Void> update(LineItems_old lineitems) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
@@ -100,14 +100,14 @@ public class LineItemsUtil {
      * Fetch all items from the inventory
      * @return a Result containing either an ArrayList of Inventory items or an error message
      */
-    public Result<ArrayList<LineItems>> fetchAll() {
+    public Result<ArrayList<LineItems_old>> fetchAll() {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM LineItems";
         try {
             PreparedStatement stmt = this.DB.connection.prepareStatement(query);
-            return Result.ok(LineItems.list(stmt.executeQuery()));
+            return Result.ok(LineItems_old.list(stmt.executeQuery()));
         } catch (SQLException e) {
             return Result.err(e.toString());
         }
@@ -118,7 +118,7 @@ public class LineItemsUtil {
      * @param invId the id of the inventory item
      * @return a Result containing either an Inventory item or an error message
      */
-    public Result<LineItems> fetch(Integer dishId, Integer orderId) {
+    public Result<LineItems_old> fetch(Integer dishId, Integer orderId) {
         if (!this.DB.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
@@ -129,7 +129,7 @@ public class LineItemsUtil {
             stmt.setInt(2, orderId);
             ResultSet result = stmt.executeQuery();
             if (result.next())
-                return Result.ok(new LineItems(result));
+                return Result.ok(new LineItems_old(result));
             else
                 return Result.err(ErrorMessage.ITEM_NOT_FOUND);
         } catch (SQLException e) {

@@ -1,11 +1,11 @@
-package org.bakerydb.backend.models;
+package models_old;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 import javafx.beans.property.*;
 
-public class EmployeesItems {
+public class EmployeesItems_old {
     private IntegerProperty emplId;
     private StringProperty firstName;
     private StringProperty middleInitial;
@@ -13,7 +13,7 @@ public class EmployeesItems {
     private StringProperty role;
     private StringProperty dateHired;
 
-    public EmployeesItems(
+    public EmployeesItems_old(
         Integer emplId,
         String firstName, 
         String middleInitial, 
@@ -29,7 +29,7 @@ public class EmployeesItems {
         this.dateHired = new SimpleStringProperty(dateHired);
     }
 
-    public EmployeesItems(ResultSet result) throws SQLException {
+    public EmployeesItems_old(ResultSet result) throws SQLException {
         this(
             result.getInt("emplId"),
             result.getString("firstName"),
@@ -40,7 +40,7 @@ public class EmployeesItems {
         );
     }
 
-    public EmployeesItems() {
+    public EmployeesItems_old() {
         this.emplId = new SimpleIntegerProperty();
         this.firstName = new SimpleStringProperty();
         this.middleInitial = new SimpleStringProperty();
@@ -49,16 +49,16 @@ public class EmployeesItems {
         this.dateHired = new SimpleStringProperty();
     }
 
-    public static ArrayList<EmployeesItems> list(ResultSet result) throws SQLException {
-        ArrayList<EmployeesItems> employeesList = new ArrayList<EmployeesItems>();
+    public static ArrayList<EmployeesItems_old> list(ResultSet result) throws SQLException {
+        ArrayList<EmployeesItems_old> employeesList = new ArrayList<EmployeesItems_old>();
         while (result.next()) {
-            employeesList.add(new EmployeesItems(result));
+            employeesList.add(new EmployeesItems_old(result));
         }
         return employeesList;
     }
 
-    public EmployeesItems clone() {
-        return new EmployeesItems(
+    public EmployeesItems_old clone() {
+        return new EmployeesItems_old(
             this.emplId.get(),
             this.firstName.get(),
             this.middleInitial.get(),
@@ -68,7 +68,7 @@ public class EmployeesItems {
         );
     }
 
-    public void update(EmployeesItems other) {
+    public void update(EmployeesItems_old other) {
         this.emplId.set(other.getemplId());
         this.firstName.set(other.getFirstName());
         this.middleInitial.set(other.getmiddleInitial());
