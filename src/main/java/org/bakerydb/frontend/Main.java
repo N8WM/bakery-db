@@ -32,6 +32,8 @@ public class Main extends Application {
         rootController.getTabs().add(new Tab("Inventory", inventoryList));
         AnchorPane inventoryList2 = FEUtil.loader("views/Inventory.fxml").load();
         rootController.getTabs().add(new Tab("Inventory2", inventoryList2));
+        AnchorPane employeeList = FEUtil.loader("views/Employee.fxml").load();
+        rootController.getTabs().add(new Tab("Employee", employeeList));
 
         Scene sc = new Scene(root, 1080, 600);
 
