@@ -6,7 +6,7 @@ public class NStringConverter<T> extends StringConverter<T> {
     private Class<StringConverter<T>> simpleType;
     private StringConverter<T> simpleConverter;
 
-    public NStringConverter(StringConverter<T> simpleConverter) {
+    public <U extends StringConverter<T>> NStringConverter(U simpleConverter) {
         super();
         this.simpleConverter = simpleConverter;
     }

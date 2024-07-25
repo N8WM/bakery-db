@@ -21,11 +21,20 @@ public class InventoryListController extends  BaseTabController<InventoryItem> {
     private TableColumn<InventoryItem, String> unitTableColumn;
     @FXML
     private TableColumn<InventoryItem, Float> reorderLevelTableColumn;
+    @FXML
+    private TableColumn<InventoryItem, Boolean> restockTableColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         onInitialize(
-            List.of(idTableColumn, nameTableColumn, quantityTableColumn, unitTableColumn, reorderLevelTableColumn),
+            List.of(
+                idTableColumn,
+                nameTableColumn,
+                quantityTableColumn,
+                unitTableColumn,
+                reorderLevelTableColumn,
+                restockTableColumn
+            ),
             List.of("name"),
             InventoryItem.class,
             "Inventory Item"

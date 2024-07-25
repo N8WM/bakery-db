@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
@@ -16,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.bakerydb.backend.DBUtil;
 import org.bakerydb.frontend.FEUtil;
@@ -40,6 +42,21 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
     private Class<T> modelClass;
     private String modelItemName;
 
+    public void onInitialize(
+        Collection<TableColumn<T, ?>> tableColumns,
+        Collection<String> searchableAttributes,
+        Class<T> modelClass,
+        String modelItemName
+    ) {
+        this.onInitialize(
+            tableColumns,
+            searchableAttributes,
+            modelClass,
+            modelItemName,
+            (a) -> {}
+        );
+    }
+
     /**
      * This method must be called by the subclass to initialize the table view
      */
@@ -47,7 +64,8 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         Collection<TableColumn<T, ?>> tableColumns,
         Collection<String> searchableAttributes,
         Class<T> modelClass,
-        String modelItemName
+        String modelItemName,
+        Consumer<T> doubleClickCallback
     ) {
         this.tableColumns = new ArrayList<>(tableColumns);
         this.searchableAttributes = new ArrayList<>(searchableAttributes);
@@ -62,6 +80,15 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
                 d -> d.getValue().getAttributes().get(_index).getUncheckedProperty()
             );
         }
+
+        tableView.setRowFactory(tv -> {
+            TableRow<T> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty()))
+                    doubleClickCallback.accept(row.getItem());
+            });
+            return row;
+        });
 
         FilteredList<T> filteredData = new FilteredList<>(observableList, b -> true);
 
@@ -165,7 +192,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         return newModel;
     }
 
-    protected ObservableList<T> getModel() {
+    protected ObservableList<T> getObservableList() {
         return this.observableList;
     }
 }
