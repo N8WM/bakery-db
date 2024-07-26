@@ -1,6 +1,6 @@
 package org.bakerydb.backend;
 
-public class DBUtil {
+public class DBManager {
     private static DBConnection DB;
     private static boolean isSetUp = false;
 

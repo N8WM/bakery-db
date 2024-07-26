@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import org.bakerydb.backend.DBUtil;
+import org.bakerydb.backend.DBManager;
 
 public abstract class Model<T extends Model<T>> {
 
@@ -54,7 +54,7 @@ public abstract class Model<T extends Model<T>> {
     }
 
     public Result<Void> addToDB() {
-        if (!DBUtil.isConnected())
+        if (!DBManager.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "INSERT INTO " + this.tableName + " (";
@@ -70,7 +70,7 @@ public abstract class Model<T extends Model<T>> {
         query += ")";
 
         try {
-            PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = DBManager.getDBConnection().connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             int i = 1;
             for (ModelAttribute<?> a : attributes)
                 if (!a.isKey() && a.isDbColumn())
@@ -103,7 +103,7 @@ public abstract class Model<T extends Model<T>> {
     }
 
     public Result<Void> updateDB() {
-        if (!DBUtil.isConnected())
+        if (!DBManager.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "UPDATE " + this.tableName + " SET ";
@@ -118,7 +118,7 @@ public abstract class Model<T extends Model<T>> {
             .collect(Collectors.joining(" AND "));
 
         try {
-            PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
+            PreparedStatement stmt = DBManager.getDBConnection().connection.prepareStatement(query);
 
             int i = 1;
             for (ModelAttribute<?> a : this.attributes)
@@ -137,7 +137,7 @@ public abstract class Model<T extends Model<T>> {
     }
 
     public Result<Void> deleteFromDB() {
-        if (!DBUtil.isConnected())
+        if (!DBManager.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "DELETE FROM " + this.tableName + " WHERE ";
@@ -147,7 +147,7 @@ public abstract class Model<T extends Model<T>> {
             .collect(Collectors.joining(" AND "));
 
         try {
-            PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
+            PreparedStatement stmt = DBManager.getDBConnection().connection.prepareStatement(query);
             for (int i = 0; i < this.attributes.size(); i++)
                 if (this.attributes.get(i).isKey() && this.attributes.get(i).isDbColumn())
                     stmt.setObject(i + 1, this.attributes.get(i).getValue());
@@ -160,7 +160,7 @@ public abstract class Model<T extends Model<T>> {
     }
 
     public Result<T> fetchOneDB(HashMap<String, Object> keys) {
-        if (!DBUtil.isConnected())
+        if (!DBManager.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM " + this.tableName + " WHERE ";
@@ -170,7 +170,7 @@ public abstract class Model<T extends Model<T>> {
         query += " LIMIT 1";
         
         try {
-            PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
+            PreparedStatement stmt = DBManager.getDBConnection().connection.prepareStatement(query);
 
             int i = 1;
             for (String key : keys.keySet())
@@ -192,13 +192,13 @@ public abstract class Model<T extends Model<T>> {
     }
 
     public Result<ArrayList<T>> fetchAllDB() {
-        if (!DBUtil.isConnected())
+        if (!DBManager.isConnected())
             return Result.err(ErrorMessage.NO_CONNECTION);
 
         String query = "SELECT * FROM " + this.tableName;
 
         try {
-            PreparedStatement stmt = DBUtil.getDBConnection().connection.prepareStatement(query);
+            PreparedStatement stmt = DBManager.getDBConnection().connection.prepareStatement(query);
             System.out.println(query);
             ResultSet result = stmt.executeQuery();
 

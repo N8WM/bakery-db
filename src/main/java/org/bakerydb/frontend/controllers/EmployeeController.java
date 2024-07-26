@@ -37,8 +37,9 @@ public class EmployeeController extends BaseTabController<Employee> {
         );
     }
 
+    @Override
     @FXML
-    private void onAddAction() {
+    public void onAddAction() {
         Employee newEmployee = new Employee(null, "", "", "", "", Date.valueOf(LocalDate.now()));
 
         FEUtil.showAddEditor(

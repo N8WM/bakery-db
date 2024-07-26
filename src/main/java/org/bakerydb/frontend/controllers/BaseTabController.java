@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import org.bakerydb.backend.DBUtil;
+import org.bakerydb.backend.DBManager;
 import org.bakerydb.frontend.FEUtil;
 import org.bakerydb.util.Model;
 import org.bakerydb.util.ModelAttribute;
@@ -133,8 +133,8 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         Result<ArrayList<T>> wrapped = this.createEmpty().fetchAllDB();
 
         if (wrapped.isErr()) {
-            if (!DBUtil.isConnected()) {
-                if (!reattemptConnection || !DBUtil.getDBConnection().connect(true)) {
+            if (!DBManager.isConnected()) {
+                if (!reattemptConnection || !DBManager.getDBConnection().connect(true)) {
                     this.observableList.clear();
                     return;
                 }
@@ -148,7 +148,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
     }
 
     @FXML
-    private void onRemoveAction() {
+    public void onRemoveAction() {
         T selectedItem = tableView.getSelectionModel().getSelectedItem();
         if (selectedItem != null)
             selectedItem.deleteFromDB()
@@ -157,7 +157,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
     }
 
     @FXML
-    private void onUpdateAction() {
+    public void onUpdateAction() {
         FEUtil.showUpdateEditor(
             tableView.getSelectionModel().getSelectedItem(),
             "Update " + this.modelItemName
@@ -165,7 +165,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
     }
 
     @FXML
-    private void onAddAction() {
+    public void onAddAction() {
         FEUtil.showAddEditor(
             this.createEmpty(),
             "Add " + this.modelItemName,
