@@ -176,7 +176,7 @@ public class ModelAttribute<T> {
             else if (this.converter.isValidStr(newValue))
                 this.field.setStyle(null);
             else
-                this.field.setText(oldValue);
+                this.field.setStyle("-fx-border-color: red;");
         });
 
         this.label.setLabelFor(this.field);
