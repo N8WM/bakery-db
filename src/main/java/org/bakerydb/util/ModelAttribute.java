@@ -23,6 +23,7 @@ public class ModelAttribute<T> {
     private TextInputControl field;
     private Label label;
     private Boolean userEditable;
+    private Boolean userVisible;
     private Boolean dbColumn;
     private Boolean key;
     private NStringConverter<T> converter;
@@ -42,6 +43,8 @@ public class ModelAttribute<T> {
      * default is TextField.class
      * @implNote {@code ModelAttribute.setUserEditable(Boolean userEditable)}
      * default is true
+     * @implNote {@code ModelAttribute.setUserVisible(Boolean userVisible)}
+     * default is true
      * @implNote {@code ModelAttribute.setDbColumn(Boolean dbColumn)}
      * default is true
      * @implNote {@code ModelAttribute.setKey(Boolean key)}
@@ -55,6 +58,7 @@ public class ModelAttribute<T> {
         this.alias = alias;
         this.displayName = alias;
         this.userEditable = true;
+        this.userVisible = true;
         this.dbColumn = true;
         this.key = false;
         this.converter = new NStringConverter<T>(
@@ -100,6 +104,10 @@ public class ModelAttribute<T> {
 
     public Boolean isUserEditable() {
         return this.userEditable;
+    }
+
+    public Boolean isUserVisible() {
+        return this.userVisible;
     }
 
     public Boolean isDbColumn() {
@@ -193,6 +201,11 @@ public class ModelAttribute<T> {
         return this;
     }
 
+    public ModelAttribute<T> setUserVisible(Boolean userVisible) {
+        this.userVisible = userVisible;
+        return this;
+    }
+
     public ModelAttribute<T> setDbColumn(Boolean dbColumn) {
         this.dbColumn = dbColumn;
         return this;
@@ -211,7 +224,7 @@ public class ModelAttribute<T> {
     }
 
     public Boolean validate() {
-        if (!this.userEditable) return true;
+        if (!this.userEditable || !this.userVisible) return true;
         if (this.getValue() == null || this.toString().isEmpty()) {
             field.setStyle("-fx-border-color: red;");
             return false;
@@ -231,6 +244,9 @@ public class ModelAttribute<T> {
             .setDisplayName(this.displayName)
             .setField(this.field.getClass())
             .setUserEditable(this.userEditable)
+            .setUserVisible(this.userVisible)
+            .setDbColumn(this.dbColumn)
+            .setKey(this.key)
             .setConverter(this.converter.getSimpleType());
     }
 }

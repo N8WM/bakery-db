@@ -1,6 +1,7 @@
 package org.bakerydb.frontend.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.bakerydb.util.*;
@@ -34,8 +35,9 @@ public class EditorController implements Initializable {
 
     public void setItem(Model<?> item) {
         model = item;
-        for (int i = 0; i < model.getAttributes().size(); i++) {
-            ModelAttribute<?> p = model.getAttributes().get(i);
+        ArrayList<ModelAttribute<?>> attrs = model.getVisibleAttributes();
+        for (int i = 0; i < attrs.size(); i++) {
+            ModelAttribute<?> p = attrs.get(i);
             if (p.isUserEditable())
                 p.addToGrid(gridPane, i);
         }

@@ -77,7 +77,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         for (int i = 0; i < this.tableColumns.size(); i ++) {
             int _index = i;
             this.tableColumns.get(_index).setCellValueFactory(
-                d -> d.getValue().getAttributes().get(_index).getUncheckedProperty()
+                d -> d.getValue().getVisibleAttributes().get(_index).getUncheckedProperty()
             );
         }
 
@@ -95,10 +95,6 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             String q = newValue == null ? "" : newValue;
             filteredData.setPredicate(item -> {
-                // boolean empty = (q.isEmpty() || q.isBlank());
-                // ModelAttribute<String> attr = item.getAttribute("name");
-                // boolean matched = attr.getValue().toLowerCase().indexOf(q.toLowerCase()) > -1;
-                // return empty || matched;
                 AtomicInteger count = new AtomicInteger(0);
                 this.searchableAttributes.forEach(attrAlias -> {
                     ModelAttribute<String> attr = item.getAttribute(attrAlias);
@@ -116,12 +112,16 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
 
         TableViewSelectionModel<T> selectionModel = tableView.getSelectionModel();
         selectionModel.selectedItemProperty().addListener(observable -> {
-            removeButton.setDisable(selectionModel.getSelectedItem() == null);
-            updateButton.setDisable(selectionModel.getSelectedItem() == null);
+            if (removeButton != null)
+                removeButton.setDisable(selectionModel.getSelectedItem() == null);
+            if (updateButton != null)
+                updateButton.setDisable(selectionModel.getSelectedItem() == null);
         });
 
-        removeButton.setDisable(true);
-        updateButton.setDisable(true);
+        if (removeButton != null)
+            removeButton.setDisable(true);
+        if (updateButton != null)
+            updateButton.setDisable(true);
     }
 
     @FXML

@@ -15,7 +15,7 @@ public class InventoryItem extends Model<InventoryItem> {
     private ModelAttribute<Float> reorderLevel;
 
     // Predicate to calculate a cosmetic attribute called "low" (not in the database)
-    private BiPredicate<Float, Float> lowPredicate = (q, rl) -> q != null && rl != null && q < rl;
+    private static BiPredicate<Float, Float> lowPredicate = (q, rl) -> q != null && rl != null && q < rl;
 
     public InventoryItem(Integer invId, String name, Float quantity, String unit, Float reorderLevel) {
         super("Inventory",
@@ -36,13 +36,7 @@ public class InventoryItem extends Model<InventoryItem> {
                 .setConverter(FloatStringConverter.class),
 
             // non-database/cosmetic attribute "low"
-            new ModelAttribute<Boolean>(
-                quantity != null
-                    && reorderLevel != null
-                    && quantity < reorderLevel,
-                "low",
-                Boolean.class
-            )
+            new ModelAttribute<Boolean>(lowPredicate.test(quantity, reorderLevel), "low", Boolean.class)
                 .setDisplayName("Low")
                 .setConverter(BooleanStringConverter.class)
                 .setUserEditable(false)
@@ -56,9 +50,9 @@ public class InventoryItem extends Model<InventoryItem> {
         this.reorderLevel = this.getAttribute("reorderLevel");
 
         this.quantity.getProperty().addListener((obs, oldVal, newVal) ->
-            this.getAttribute("low").setValue(this.lowPredicate.test(newVal, this.reorderLevel.getValue())));
+            this.getAttribute("low").setValue(lowPredicate.test(newVal, this.reorderLevel.getValue())));
         this.reorderLevel.getProperty().addListener((obs, oldVal, newVal) ->
-            this.getAttribute("low").setValue(this.lowPredicate.test(this.quantity.getValue(), newVal)));
+            this.getAttribute("low").setValue(lowPredicate.test(this.quantity.getValue(), newVal)));
     }
 
     public InventoryItem() {

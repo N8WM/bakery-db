@@ -29,6 +29,12 @@ public abstract class Model<T extends Model<T>> {
         return this.attributes;
     }
 
+    public ArrayList<ModelAttribute<?>> getVisibleAttributes() {
+        return this.attributes.stream()
+            .filter(a -> a.isUserVisible())
+            .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public void updateFromSQL(ResultSet result) throws SQLException {
         for (ModelAttribute<?> a : this.attributes)
             if (a.isDbColumn()) a.updateFromSQL(result);

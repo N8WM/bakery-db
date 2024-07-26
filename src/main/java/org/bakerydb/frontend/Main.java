@@ -30,6 +30,8 @@ public class Main extends Application {
 
         AnchorPane inventoryList = FEUtil.loader("views/Inventory.fxml").load();
         rootController.getTabs().add(new Tab("Inventory", inventoryList));
+        AnchorPane orders = FEUtil.loader("views/Orders.fxml").load();
+        rootController.getTabs().add(new Tab("Orders", orders));
         AnchorPane dishes = FEUtil.loader("views/Dishes.fxml").load();
         rootController.getTabs().add(new Tab("Dishes", dishes));
         AnchorPane employeeList = FEUtil.loader("views/Employee.fxml").load();
