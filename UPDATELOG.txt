@@ -85,6 +85,11 @@ FRONTEND TAB VIEWS
   07/21 11:20PM
   07/22 2:00AM
 
+Veer Bhagia
+Backend java utils classes
+  07/22 12:00PM
+  07/24 4:00PM
+
 Nathan McCutchen
 TAB VIEWS
   07/22 3:00PM
@@ -125,3 +130,7 @@ ORDERS AND LINE ITEMS
 Handling inventory interactions and specialized view
   07/25 12:00PM
   07/26 3:30AM
+
+Veer Bhagia
+Small edits to presentation
+  07/26 6:30AM
