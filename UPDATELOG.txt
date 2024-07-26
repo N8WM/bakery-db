@@ -65,6 +65,11 @@ FRONTEND INVENTORY LISTINGS
   07/19 6:00PM
   07/20 12:30AM
 
+Oscar Gomez
+BACKEND old util and items
+  07/19 12:00PM
+  07/20 8:00PM
+
 Nathan McCutchen
 FRONTEND INVENTORY LISTINGS
   07/20 3:00PM
@@ -89,4 +94,9 @@ Nathan McCutchen
 GENERALIZING CONTROLLERS
   07/24 6:00PM
   07/25 3:00AM
+  
+Oscar Gomez
+Presentation slides and docs
+  07/25 4:00PM
+  07/25 9:00PM
 
