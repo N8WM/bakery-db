@@ -1,6 +1,5 @@
 package org.bakerydb.backend.models;
 
-import java.sql.*;
 import java.util.function.BiPredicate;
 
 import org.bakerydb.util.Model;
@@ -15,8 +14,8 @@ public class InventoryItem extends Model<InventoryItem> {
     private ModelAttribute<String> unit;
     private ModelAttribute<Float> reorderLevel;
 
-    // Predicate to calculate a cosmetic attribute called "restock" (not in the database)
-    private BiPredicate<Float, Float> restockPredicate = (q, rl) -> q != null && rl != null && q < rl;
+    // Predicate to calculate a cosmetic attribute called "low" (not in the database)
+    private BiPredicate<Float, Float> lowPredicate = (q, rl) -> q != null && rl != null && q < rl;
 
     public InventoryItem(Integer invId, String name, Float quantity, String unit, Float reorderLevel) {
         super("Inventory",
@@ -36,15 +35,15 @@ public class InventoryItem extends Model<InventoryItem> {
                 .setDisplayName("Reorder Level")
                 .setConverter(FloatStringConverter.class),
 
-            // non-database/cosmetic attribute "restock"
+            // non-database/cosmetic attribute "low"
             new ModelAttribute<Boolean>(
                 quantity != null
                     && reorderLevel != null
                     && quantity < reorderLevel,
-                "restock",
+                "low",
                 Boolean.class
             )
-                .setDisplayName("Restock")
+                .setDisplayName("Low")
                 .setConverter(BooleanStringConverter.class)
                 .setUserEditable(false)
                 .setDbColumn(false)
@@ -57,18 +56,13 @@ public class InventoryItem extends Model<InventoryItem> {
         this.reorderLevel = this.getAttribute("reorderLevel");
 
         this.quantity.getProperty().addListener((obs, oldVal, newVal) ->
-            this.getAttribute("restock").setValue(this.restockPredicate.test(newVal, this.reorderLevel.getValue())));
+            this.getAttribute("low").setValue(this.lowPredicate.test(newVal, this.reorderLevel.getValue())));
         this.reorderLevel.getProperty().addListener((obs, oldVal, newVal) ->
-            this.getAttribute("restock").setValue(this.restockPredicate.test(this.quantity.getValue(), newVal)));
+            this.getAttribute("low").setValue(this.lowPredicate.test(this.quantity.getValue(), newVal)));
     }
 
     public InventoryItem() {
         this(null, null, null, null, null);
-    }
-
-    public InventoryItem(ResultSet result) throws SQLException {
-        this();
-        this.updateFromSQL(result);
     }
 
     @Override

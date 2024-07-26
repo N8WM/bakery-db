@@ -1,6 +1,5 @@
 package org.bakerydb.backend.models;
 
-import java.sql.*;
 import java.util.Date;
 
 import org.bakerydb.util.Model;
@@ -46,11 +45,6 @@ public class Employee extends Model<Employee> {
 
     public Employee() {
         this(null, null, null, null, null, null);
-    }
-
-    public Employee(ResultSet result) throws SQLException {
-        this();
-        this.updateFromSQL(result);
     }
 
     @Override
