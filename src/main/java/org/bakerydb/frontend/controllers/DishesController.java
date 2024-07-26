@@ -42,20 +42,4 @@ public class DishesController extends BaseTabController<Dishes> {
         descriptionTableColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         ingredientsTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.join(", ", cellData.getValue().getIngredients())));
     }
-
-    @FXML
-    public void onAddAction() {
-        Dishes newDish = new Dishes();
-        ObservableList<Dishes> toAdd = this.getObservableList();
-
-        FEUtil.showAddEditor(newDish, "Add Dish", toAdd);
-    }
-
-    @FXML
-    public void onUpdateAction() {
-        Dishes selectedDish = tableView.getSelectionModel().getSelectedItem();
-        if (selectedDish != null) {
-            FEUtil.showUpdateEditor(selectedDish, "Update Dish");
-        }
-    }
 }
