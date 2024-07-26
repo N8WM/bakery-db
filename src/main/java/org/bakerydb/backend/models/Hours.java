@@ -112,4 +112,11 @@ public class Hours extends Model<Hours> {
             this.clockedOut.getValue()
         );
     }
+    public void setEmplId(int emplId) {
+        this.emplId.setValue(emplId);
+    }
+
+    public void setClockedOut(Timestamp clockedOut) {
+        this.clockedOut.setValue(clockedOut);
+    }
 }

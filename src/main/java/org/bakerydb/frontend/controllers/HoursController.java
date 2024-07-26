@@ -1,9 +1,9 @@
 package org.bakerydb.frontend.controllers;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.Button;
 import java.net.URL;
@@ -57,18 +57,21 @@ public class HoursController extends BaseTabController<Hours> {
     }
 
     @FXML
-    private void onAddAction() {
-        // Get the current timestamp for clockedIn
-        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+    private void onClockInAction() {
+        Hours newHours = new Hours(null, null, Timestamp.valueOf(LocalDateTime.now()), null);
+        ObservableList<Hours> toAdd = this.getObservableList();
 
-        // Create a new Hours object with default values and the current timestamp
-        Hours newHours = new Hours(null, null, currentTimestamp, null);
+        FEUtil.showClockInEditor(newHours, "Clock In", toAdd);
+    }
 
-        // Show the clock-in editor dialog
-        FEUtil.showAddEditor(
-            newHours,
-            "Clock In",
-            this.getObservableList()
-        );
+    @FXML
+    private void onClockOutAction() {
+        Hours selectedHours = tableView.getSelectionModel().getSelectedItem();
+        if (selectedHours != null && selectedHours.getClockedOut() == null) {
+            selectedHours.setClockedOut(Timestamp.valueOf(LocalDateTime.now()));
+            selectedHours.updateDB()
+                .onSuccess(() -> tableView.refresh())
+                .onError(m -> FEUtil.showStatusMessage("Failed to Clock Out", m, true));
+        }
     }
 }

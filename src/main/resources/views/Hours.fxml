@@ -34,7 +34,7 @@
       </Label>
       <ButtonBar layoutX="850.0" layoutY="529.0" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="30.0">
          <buttons>
-            <Button fx:id="clockInButton" layoutX="140.0" layoutY="17.0" mnemonicParsing="false" onAction="#onAddAction" text="Clock In">
+            <Button fx:id="clockInButton" layoutX="140.0" layoutY="17.0" mnemonicParsing="false" onAction="#onClockInAction" text="Clock In">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -43,7 +43,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="updateButton" disable="true" layoutX="126.0" layoutY="17.0" mnemonicParsing="false" onAction="#onUpdateAction" text="Clock Out">
+            <Button fx:id="updateButton" disable="true" layoutX="126.0" layoutY="17.0" mnemonicParsing="false" onAction="#onClockOutAction" text="Clock Out">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
