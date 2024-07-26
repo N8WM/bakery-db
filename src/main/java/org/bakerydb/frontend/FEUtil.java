@@ -3,6 +3,8 @@ package org.bakerydb.frontend;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.bakerydb.backend.models.Hours;
+import org.bakerydb.frontend.controllers.ClockInEditorController;
 import org.bakerydb.frontend.controllers.EditorController;
 import org.bakerydb.frontend.controllers.StatusMessageController;
 import org.bakerydb.util.Model;
@@ -100,5 +102,46 @@ public class FEUtil {
 
     public static <T extends Model<T>> void showUpdateEditor(T model, String title) {
         showAddEditor(model, title, null);
+    }
+
+   public static <T extends Model<T>> void showClockInEditor(T model, String title, ObservableList<T> observableList) {
+        Boolean isAdd = observableList != null;
+
+        T clone = model.clone();
+        FXMLLoader fxmlLoader = loader("views/ClockInEditor.fxml");
+        DialogPane dialogPane;
+
+        try {
+            dialogPane = fxmlLoader.load();
+        } catch (IOException e) {
+            showStatusMessage("Error Opening Editor", e.getMessage(), true);
+            return;
+        }
+
+        ClockInEditorController editorController = fxmlLoader.getController();
+        editorController.setItem((Hours) clone);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(dialogPane);
+        dialog.setTitle(title);
+
+        Optional<ButtonType> clickedButton = dialog.showAndWait();
+
+        if (!clickedButton.isPresent()) {
+            showStatusMessage(
+                "JavaFX Error",
+                "Node was not fully loaded",
+                true
+            );
+        } else if (clickedButton.get() == ButtonType.OK) {
+            if (isAdd) {
+                clone.addToDB()
+                    .onSuccess(k -> {
+                        model.update(clone);
+                        observableList.add(clone);
+                    })
+                    .onError(m -> showStatusMessage("Failed to Add Item", m, true));
+            }
+        }
     }
 }

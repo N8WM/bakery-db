@@ -101,6 +101,6 @@ CREATE TABLE Hours (
     hid integer AUTO_INCREMENT PRIMARY KEY,
     emplId integer NOT NULL,
     clockedIn TIMESTAMP NOT NULL,
-    clockedOut TIMESTAMP NULL DEFAULT NULL,
+    clockedOut TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (emplId) REFERENCES Employees (emplId)
 );
