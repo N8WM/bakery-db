@@ -30,7 +30,7 @@ public abstract class BaseTabController<T extends Model<T>> implements Initializ
     @FXML
     private TextField searchTextField;
     @FXML
-    private TableView<T> tableView;
+    protected TableView<T> tableView;
     @FXML
     private Button removeButton;
     @FXML
