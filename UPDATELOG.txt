@@ -119,3 +119,9 @@ HAROLD ELLIS
 EMPLOYEE, TIMESHEET, DISHES VIEWS
   07/25 2:00PM
   07/26 1:00AM
+
+Nathan McCutchen
+ORDERS AND LINE ITEMS
+Handling inventory interactions and specialized view
+  07/25 12:00PM
+  07/26 3:30AM

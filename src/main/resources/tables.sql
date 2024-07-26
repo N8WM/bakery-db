@@ -47,7 +47,7 @@ delimiter ;
 
 CREATE TABLE Dishes (
     dishId integer AUTO_INCREMENT PRIMARY KEY,
-    name varchar(50) NOT NULL,
+    name varchar(50) UNIQUE NOT NULL,
     price float NOT NULL,
     category enum(
         'Bread', 'Pastries', 'Cakes', 'Cookies',
@@ -82,7 +82,6 @@ CREATE TABLE Orders (
     ccn varchar(16) NOT NULL,
     date date NOT NULL,
     emplId integer NOT NULL,
-    total float NOT NULL,
     FOREIGN KEY (emplId) REFERENCES Employees (emplId)
 );
 
@@ -90,7 +89,6 @@ CREATE TABLE LineItems (
     dishId integer NOT NULL,
     orderId integer NOT NULL,
     quantity integer NOT NULL DEFAULT 1,
-    price float NOT NULL,
     specialInstructions varchar(250),
     PRIMARY KEY (dishId, orderId),
     FOREIGN KEY (dishId) REFERENCES Dishes (dishId),

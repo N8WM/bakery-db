@@ -104,7 +104,7 @@ public class FEUtil {
         showAddEditor(model, title, null);
     }
 
-   public static <T extends Model<T>> void showClockInEditor(T model, String title, ObservableList<T> observableList) {
+    public static <T extends Model<T>> void showClockInEditor(T model, String title, ObservableList<T> observableList) {
         Boolean isAdd = observableList != null;
 
         T clone = model.clone();
@@ -143,5 +143,12 @@ public class FEUtil {
                     .onError(m -> showStatusMessage("Failed to Add Item", m, true));
             }
         }
+    }
+
+    public static Optional<ButtonType> showCustomDialog(DialogPane dialogPane, String title) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(dialogPane);
+        dialog.setTitle(title);
+        return dialog.showAndWait();
     }
 }

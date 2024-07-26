@@ -1,7 +1,6 @@
 package org.bakerydb.frontend.controllers;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -9,7 +8,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.bakerydb.backend.models.Dishes;
-import org.bakerydb.frontend.FEUtil;
 
 public class DishesController extends BaseTabController<Dishes> {
 
