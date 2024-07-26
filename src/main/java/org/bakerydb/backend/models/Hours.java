@@ -2,7 +2,7 @@ package org.bakerydb.backend.models;
 
 import java.sql.*;
 import org.bakerydb.backend.DBConnection;
-import org.bakerydb.backend.DBUtil;
+import org.bakerydb.backend.DBManager;
 import org.bakerydb.util.Model;
 import org.bakerydb.util.ModelAttribute;
 import javafx.util.converter.*;
@@ -63,7 +63,7 @@ public class Hours extends Model<Hours> {
 
     private void loadEmployeeDetails() throws SQLException {
         if (this.emplId.getValue() != null) {
-            DBConnection conn = DBUtil.getDBConnection();
+            DBConnection conn = DBManager.getDBConnection();
             String query = "SELECT firstName, lastName FROM Employees WHERE emplId = ?";
             PreparedStatement stmt = conn.connection.prepareStatement(query);
             stmt.setInt(1, this.emplId.getValue());
